@@ -1,0 +1,27 @@
+<% url = false if local_assigns[:url].nil? %>
+
+<dl class="mb-0">
+  <dt><%= label %></dt>
+  <dd>
+    <% if url %>
+      <a href="<%= value %>">
+        <i class="fas fa-link"></i> Click here
+      </a>
+    <% else %>
+      <%= value %>
+      <% if (value.class.name == 'String') && value.include?('@') %>
+        <a href="mailto:<%= value %>">
+          <i class="far fa-envelope"></i>
+        </a>
+      <% end %>
+      <% unless local_assigns[:details].nil? %>
+        <small>
+          <a href="<%= details %>">
+            <i class="far fa-folder-open"></i> View
+          </a>
+        </small>
+      <% end %>
+    <% end %>
+    &nbsp;
+  </dd>
+</dl>

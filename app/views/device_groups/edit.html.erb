@@ -1,0 +1,41 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+  <div class="ibox ">
+    <div class="ibox-title">
+      <% if @device_group.id %>
+        <h3> <%= @device_group.name %> </h3>
+      <% end %>
+      Please note that <span class="required-legend">indicates a required field</span>
+    </div>
+    <div class="ibox-content">
+      <div class="row">
+        <div class="col">
+          <%= render partial: "layouts/errors", object: @device_group, as: 'form' %>
+
+          <%= bootstrap_form_for(@device_group, inline_errors: false, html: { class: 'mt-3' }) do |f| %>
+
+            <div class="row">
+              <div class="col-sm-6">
+                <%= f.text_field :name, :label => 'Name' %>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <%= f.text_area :notes, label: 'Notes', rows: 5 %>
+              </div>
+            </div>
+
+            <div class="mt-2 float-right">
+              <%= button_tag(type: "submit", class: "btn btn-w-m btn-primary") do %>
+                <i class="fa fa-check"></i> Save
+              <% end %>
+              <%= link_to @cancel_path, :class => 'btn btn-w-m btn-default' do %>
+                <i class="fa fa-times"></i> Cancel
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

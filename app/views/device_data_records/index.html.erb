@@ -1,0 +1,109 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+  <div class="ibox">
+    <div class="ibox-title">
+      <div class="ibox-tools">
+        <span class="btn btn-<%= @filter.except(:order_by).empty? ? "secondary" : "warning" %> btn-xs btn-w-m"
+          data-toggle="collapse" data-target="#filter">
+          <i class="fa fa-filter"></i> Filter
+          <span class="caret"></span>
+        </span>
+      </div>
+    </div>
+    <div class="ibox-content">
+      <div class="row d-print-none">
+        <div class="col">
+          <div id="filter" class="collapse">
+            <div class="card">
+              <div class="card-body">
+              <%= form_tag device_data_records_path, method: :get, class: "filter" do |f| %>
+                <%= hidden_field_tag :order_by, @filter[:order_by] %>
+                <div class="row">
+                  <div class="col-sm">
+                    <div class="form-group">
+                      <%= label_tag :with_device_id, 'Find records for devices whose ids contain...', :class => 'control-label' %>
+                      <%= text_field_tag :with_device_id, @filter[:with_device_id], :class => 'form-control' %>
+                    </div>
+                  </div>
+                  <div class="col-sm">
+                    <div class="form-group">
+                      <%= label_tag :recorded_on, 'Find records recorded on...', :class => 'control-label' %>
+                      <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        <%= text_field_tag :recorded_on,
+                                          (@filter[:recorded_on] if @filter.has_key?(:recorded_on)),
+                                          :placeholder => 'dd/mm/yyyy',
+                                          :class => 'form-control datepicker' %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <div class="form-group float-right">
+                      <%= link_to device_data_records_clear_filter_path, :class => 'btn btn-light btn-xs' do %>
+                        <i class="fa fa-times"></i> Clear filter
+                      <% end %>
+                      <%= button_tag(type: "submit", class: "btn btn-primary btn-xs") do %>
+                        <i class="fa fa-filter"></i> Apply filter
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive mt-3 d-none d-sm-block">
+        <table class="table table-striped vertical-align-middle">
+          <thead>
+            <tr>
+              <th><%= sortable 'recorded_at', @filter, device_data_records_path, 'Recorded at' %></th>
+              <th><%= sortable 'device_id', @filter, device_data_records_path, 'Device ID' %></th>
+              <th>Footfall</th>
+              <th>Battery</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @device_data_records.each do |record| %>
+            <tr>
+              <td><%= l(record.recorded_at, format: :long) %></td>
+              <td><%= record.device_id %></td>
+              <td><%= record.footfall %></td>
+              <td><%= record.battery %></td>
+              <td class="text-right">
+              </td>
+            </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+      <ul class="list-group list-group-striped d-block d-sm-none">
+        <% @device_data_records.each do |record| %>
+        <li class="list-group-item">
+          <strong><%= record.device_id %></strong><br/>
+          <small>
+            <i><%= l(record.recorded_at, format: :long) %></i><br>
+            Footfall: <%= record.footfall %><br>
+            Battery: <%= record.battery %><br>
+          </small>
+        </li>
+        <% end %>
+      </ul>
+    </div>
+    <div class="ibox-footer">
+      <div class="row">
+        <div class="col">
+          <%= page_entries_info @device_data_records %>
+        </div>
+        <div class="col">
+          <div class="d-flex align-items-center flex-row-reverse">
+            <%= paginate @device_data_records %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,158 @@
+
+<div class="wrapper wrapper-content animated fadeInRight">
+  <div class="row">
+    <div class="col-lg-9">
+      <div class="ibox ">
+        <div class="ibox-title">
+          <h3><%= @device_group.name %></h3>
+        </div>
+        <div class="ibox-content">
+          <div class="row">
+            <div class="col-md-12">
+              <%= render partial: 'show_detail_row', locals: { label: "Name", value: @device_group.name } %>
+
+              <dl class="mb-0">
+                <dt>Notes</dt>
+                <dd class="mb-1">
+                  <%= simple_format(@device_group.notes) %>
+                </dd>
+              </dl>
+
+              <div class="row">
+                <div class="col-md-3">
+                  <dl class="mb-0">
+                    <dt>Devices</dt>
+                    <dd class="mb-1">
+                      <ul class="list-unstyled">
+                        <% @device_group.devices.ordered_by_device_id.each do |device| %>
+                          <li>
+                            <%= device.device_id %>
+                            <small>
+                              <%= link_to device_path(device) do %>
+                                <i class="fa fa-folder-open"></i> View
+                              <% end %>
+                            </small>
+                          </li>
+                        <% end %>
+                      </ul>
+                    </dd>
+                  </dl>
+                </div>
+                <div class="col-md-9">
+                  <div id="map" class="mt-2 mb-4" style="width: 100%; height: 600px;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3 d-print-none">
+      <div class="ibox ">
+        <div class="ibox-title">
+          <h3>Actions</h3>
+        </div>
+        <div class="ibox-content">
+          <div class="row">
+            <div class="col-sm-6 col-lg-12">
+              <% if can? :edit, @device_group %>
+              <div>
+                <%= link_to edit_device_group_path, :class => 'btn btn-outline btn-block btn-primary mb-2' do %>
+                  <i class="fa fa-edit"></i> Edit details
+                <% end %>
+              </div>
+              <% end %>
+
+              <% if can? :manage, Audit %>
+              <div>
+                <%= link_to audits_path_for(@device_group), :class => 'btn btn-outline btn-block btn-info mb-2' do %>
+                  <i class="fa fa-camera"></i> View audit
+                <% end %>
+              </div>
+              <% end %>
+
+              <% if can? :destroy, @device_group %>
+              <div>
+                <a class="btn btn-outline btn-block btn-danger mb-2 text-danger"
+                    data-toggle='modal' data-target='#delete'>
+                  <i class="fa fa-times"></i> Delete this device group
+                </a>
+              </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal inmodal" id="delete" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content animated flipInY">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">
+          <span aria-hidden="true">×</span><span class="sr-only">Close</span>
+        </button>
+        <i class="fa fa-bomb modal-icon"></i>
+        <h4 class="modal-title">Warning</h4>
+        <small class="font-bold">You are about to delete a device group!</small>
+      </div>
+      <div class="modal-body">
+        <p>
+          If you continue with this action you will delete this record.
+          This action <strong><em>cannot be reversed</em></strong>, so you should
+          think carefully before continuing.
+        </p>
+        <p>
+          Devices associated with this group will not be deleted. If you want
+          to delete those, you should do that separately.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <%= form_for [@device_group], method: :delete, :html => { :class => "device" } do |f| %>
+        <button type="button" class="btn btn-white" data-dismiss="modal">Cancel (don't delete)</button>
+        <button type="submit" class="btn btn-danger">Continue (delete)</button>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<%
+  map_centre = @device_group.map_centre
+  map_zoom = @device_group.map_zoom
+%>
+
+<%= javascript_tag do %>
+
+  var map;
+
+  function initMap() {
+    let center = { lat: <%= map_centre[:latitude] %>, lng: <%= map_centre[:longitude] %> };
+    let zoom = <%= map_zoom %>;
+
+    map = new google.maps.Map(
+      document.getElementById('map'), {
+        center: center,
+        zoom: zoom
+      }
+    );
+
+    <% @device_group.devices.with_a_location(true).each do |d| %>
+    new google.maps.Marker({
+      position: {
+        lat: <%= d.latitude %>,
+        lng: <%= d.longitude %>
+      },
+      map: map
+    });
+    <% end %>
+  }
+
+<% end %>
+
+
+<%= javascript_include_tag "https://maps.googleapis.com/maps/api/js?key=#{Rails.configuration.x.google.maps_api_key}&callback=initMap" %>

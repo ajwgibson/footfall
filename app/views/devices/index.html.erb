@@ -1,0 +1,146 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+  <div class="ibox">
+    <div class="ibox-title">
+      <div class="ibox-tools">
+        <%= link_to new_device_path, class: "btn btn-primary btn-xs btn-w-m" do %>
+          <i class="far fa-plus-square"></i> New device
+        <% end %>
+        <span class="btn btn-<%= @filter.except(:order_by).empty? ? "secondary" : "warning" %> btn-xs btn-w-m"
+          data-toggle="collapse" data-target="#filter">
+          <i class="fa fa-filter"></i> Filter
+          <span class="caret"></span>
+        </span>
+      </div>
+    </div>
+    <div class="ibox-content">
+      <div class="row d-print-none">
+        <div class="col">
+          <div id="filter" class="collapse">
+            <div class="card">
+              <div class="card-body">
+              <%= form_tag devices_path, method: :get, class: "filter" do |f| %>
+                <%= hidden_field_tag :order_by, @filter[:order_by] %>
+                <div class="row">
+                  <div class="col-sm">
+                    <div class="form-group">
+                      <%= label_tag :with_device_id, 'Find devices whose ids contain...', :class => 'control-label' %>
+                      <%= text_field_tag :with_device_id, @filter[:with_device_id], :class => 'form-control' %>
+                    </div>
+                    <div class="form-group">
+                      <%= label_tag :with_device_group_id, 'Find devices in device group...', :class => 'control-label' %>
+                      <%= select_tag :with_device_group_id,
+                            options_from_collection_for_select(@device_groups, 'id', 'name', @filter[:with_device_group_id]),
+                            { prompt: "Please select a device group...", class: 'form-control' } %>
+                    </div>
+                  </div>
+                  <div class="col-sm">
+                    <div class="form-group">
+                      <%= label_tag :with_a_location, 'Find devices with location set...', :class => 'control-label' %>
+                      <%= select_tag :with_a_location,
+                            options_for_select([['Yes', 'true'],['No', 'false']], @filter[:with_a_location]),
+                            { prompt: "Please select a value...", class: 'form-control' } %>
+                    </div>
+                  </div>
+                  <div class="col-sm">
+                    <div class="form-group">
+                      <%= label_tag :with_footfall_status, 'Find devices with footfall status...', :class => 'control-label' %>
+                      <%= select_tag :with_footfall_status,
+                            options_from_collection_for_select(
+                              Device.status_values,
+                              :to_s,
+                              proc { |t| t.humanize },
+                              @filter[:with_footfall_status]
+                            ),
+                            { prompt: "Please select a status...", class: 'form-control' } %>
+                    </div>
+                    <div class="form-group">
+                      <%= label_tag :with_battery_status, 'Find devices with battery status...', :class => 'control-label' %>
+                      <%= select_tag :with_battery_status,
+                            options_from_collection_for_select(
+                              Device.status_values,
+                              :to_s,
+                              proc { |t| t.humanize },
+                              @filter[:with_battery_status]
+                            ),
+                            { prompt: "Please select a status...", class: 'form-control' } %>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <div class="form-group float-right">
+                      <%= link_to devices_clear_filter_path, :class => 'btn btn-light btn-xs' do %>
+                        <i class="fa fa-times"></i> Clear filter
+                      <% end %>
+                      <%= button_tag(type: "submit", class: "btn btn-primary btn-xs") do %>
+                        <i class="fa fa-filter"></i> Apply filter
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive mt-3 d-none d-sm-block">
+        <table class="table table-striped vertical-align-middle">
+          <thead>
+            <tr>
+              <th><%= sortable 'device_id', @filter, devices_path, 'Device ID' %></th>
+              <th><%= sortable 'device_groups.name', @filter, devices_path, 'Device group' %></th>
+              <th>Location</th>
+              <th>Footfall</th>
+              <th>Battery</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @devices.each do |device| %>
+            <tr>
+              <td><%= device.device_id %></td>
+              <td><%= device&.device_group&.name %></td>
+              <td><%= device.location_as_string %></td>
+              <td><%= device_footfall_status(device) %></td>
+              <td><%= device_battery_status(device) %></td>
+              <td class="text-right">
+                <%= link_to device_path(device), class: "btn btn-primary btn-xs" do %>
+                  <i class="fa fa-folder-open"></i> View
+                <% end%>
+              </td>
+            </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+      <ul class="list-group list-group-striped d-block d-sm-none">
+        <% @devices.each do |device| %>
+        <li class="list-group-item">
+          <div class="float-right">
+            <%= link_to device_path(device), :class => 'btn btn-primary btn-xs' do %>
+              <i class="fa fa-folder-open"></i> View
+            <% end %>
+          </div>
+          <strong><%= device.device_id %></strong><br/>
+          <small>
+            <%= device_footfall_status(device) %> <%= device_battery_status(device) %>
+          </small>
+        </li>
+        <% end %>
+      </ul>
+    </div>
+    <div class="ibox-footer">
+      <div class="row">
+        <div class="col">
+          <%= page_entries_info @devices %>
+        </div>
+        <div class="col">
+          <div class="d-flex align-items-center flex-row-reverse">
+            <%= paginate @devices %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

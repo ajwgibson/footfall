@@ -1,0 +1,122 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+  <div class="ibox">
+    <div class="ibox-title">
+      <div class="ibox-tools">
+        <%= link_to new_background_task_path, class: "btn btn-primary btn-xs btn-w-m" do %>
+          <i class="far fa-plus-square"></i> New background task
+        <% end %>
+        <span class="btn btn-<%= @filter.except(:order_by).empty? ? "secondary" : "warning" %> btn-xs btn-w-m"
+          data-toggle="collapse" data-target="#filter">
+          <i class="fa fa-filter"></i> Filter
+          <span class="caret"></span>
+        </span>
+      </div>
+    </div>
+    <div class="ibox-content">
+      <div class="row d-print-none">
+        <div class="col">
+          <div id="filter" class="collapse">
+            <div class="card">
+              <div class="card-body">
+              <%= form_tag background_tasks_path, method: :get, class: "filter" do |f| %>
+                <%= hidden_field_tag :order_by, @filter[:order_by] %>
+                <div class="row">
+                  <div class="col-sm">
+                    <div class="form-group">
+                      <%= label_tag :with_task_type, 'Find background_tasks of type...', :class => 'control-label' %>
+                      <%= select_tag :with_task_type,
+                            options_for_select(BackgroundTask.selectable_task_types, @filter[:with_task_type]),
+                            { prompt: "Please select a type...", class: 'form-control' } %>
+                    </div>
+                  </div>
+                  <div class="col-sm">
+                    <div class="form-group">
+                      <%= label_tag :with_status, 'Find background tasks with status...', :class => 'control-label' %>
+                      <%= select_tag :with_status,
+                            options_for_select(BackgroundTask.selectable_statuses, @filter[:with_status]),
+                            { prompt: "Please select a status...", class: 'form-control' } %>
+                    </div>
+                  </div>
+                  <div class="col-sm">
+                    <div class="form-group">
+                      <%= label_tag :with_outcome, 'Find background tasks with outcome...', :class => 'control-label' %>
+                      <%= select_tag :with_outcome,
+                            options_for_select(BackgroundTask.selectable_outcomes, @filter[:with_outcome]),
+                            { prompt: "Please select an outcome...", class: 'form-control' } %>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <div class="form-group float-right">
+                      <%= link_to background_tasks_clear_filter_path, :class => 'btn btn-light btn-xs' do %>
+                        <i class="fa fa-times"></i> Clear filter
+                      <% end %>
+                      <%= button_tag(type: "submit", class: "btn btn-primary btn-xs") do %>
+                        <i class="fa fa-filter"></i> Apply filter
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive mt-3 d-none d-sm-block">
+        <table class="table table-striped vertical-align-middle">
+          <thead>
+            <tr>
+              <th><%= sortable 'id', @filter, background_tasks_path, 'Id' %></th>
+              <th>Type</th>
+              <th>Status</th>
+              <th>Outcome</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @background_tasks.each do |background_task| %>
+            <tr>
+              <td><%= background_task.id %></td>
+              <td><%= background_task.task_type.humanize %></td>
+              <td><%= background_task.status.humanize %></td>
+              <td><%= background_task.outcome.humanize %></td>
+              <td class="text-right">
+                <%= link_to background_task_path(background_task), class: "btn btn-primary btn-xs" do %>
+                  <i class="fa fa-folder-open"></i> View
+                <% end%>
+              </td>
+            </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+      <ul class="list-group list-group-striped d-block d-sm-none">
+        <% @background_tasks.each do |background_task| %>
+        <li class="list-group-item">
+          <div class="float-right">
+            <%= link_to background_task_path(background_task), :class => 'btn btn-primary btn-xs' do %>
+              <i class="fa fa-folder-open"></i> View
+            <% end %>
+          </div>
+          <strong><%= background_task.id %>. <%= background_task.task_type.humanize %></strong><br/>
+          <%= background_task.status.humanize %><br/>
+        </li>
+        <% end %>
+      </ul>
+    </div>
+    <div class="ibox-footer">
+      <div class="row">
+        <div class="col">
+          <%= page_entries_info @background_tasks %>
+        </div>
+        <div class="col">
+          <div class="d-flex align-items-center flex-row-reverse">
+            <%= paginate @background_tasks %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

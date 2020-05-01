@@ -1,0 +1,27 @@
+
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  # For details on connection pooling, see Rails configuration guide
+  # http://guides.rubyonrails.org/configuring.html#database-pooling
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+development: &development
+  <<: *default
+  database: footfall_development
+  username: postgres
+  #password:
+  host: database
+  #port: 5432
+  #schema_search_path: myapp,sharedapp,public
+  #min_messages: notice
+
+test:
+  <<: *development
+  database: footfall_test
+
+production:
+  <<: *default
+  database: <%= ENV.fetch('FOOTFALL_DATABASE') { nil } %>
+  username: <%= ENV.fetch('FOOTFALL_DATABASE_USERNAME') { nil } %>
+  password: <%= ENV.fetch('FOOTFALL_DATABASE_PASSWORD') { nil } %>

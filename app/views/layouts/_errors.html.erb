@@ -1,0 +1,12 @@
+<% if form.errors.any? %>
+  <div id="error_expl" class="card border-danger mb-3">
+    <div class="card-body text-danger">
+      <h3 class="card-title"><%= pluralize(form.errors.count, "error") %></h3>
+      <ul>
+      <% form.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  </div>
+<% end %>

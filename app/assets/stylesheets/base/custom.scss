@@ -1,0 +1,15 @@
+/* Only demo */
+@media (max-width: 1000px) {
+  .welcome-message {
+    display: none;
+  }
+}
+
+
+.input-group-text {
+  font-size: 0.9rem;
+}
+
+.text-green {
+  color: $navy;
+}

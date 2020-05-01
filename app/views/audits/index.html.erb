@@ -1,0 +1,147 @@
+
+<div class="wrapper wrapper-content animated fadeInRight">
+  <div class="ibox">
+    <div class="ibox-title">
+      <div class="ibox-tools">
+        <span class="btn btn-<%= @filter.except(:order_by).empty? ? "secondary" : "warning" %> btn-xs btn-w-m"
+          data-toggle="collapse" data-target="#filter">
+          <i class="fa fa-filter"></i> Filter
+          <span class="caret"></span>
+        </span>
+      </div>
+    </div>
+    <div class="ibox-content">
+      <div class="row d-print-none">
+        <div class="col">
+          <div id="filter" class="collapse">
+            <div class="card">
+              <div class="card-body">
+              <%= form_tag audits_path, method: :get, class: "filter" do |f| %>
+                <div class="row">
+                  <div class="col-sm">
+                    <div class="form-group">
+                      <%= label_tag :for_date, 'Find events for a given date...', class: 'control-label' %>
+                      <div class="input-group date">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        <%= text_field_tag :for_date,
+                              (@filter[:for_date] if @filter.has_key?(:for_date)),
+                              placeholder: 'dd/mm/yyyy',
+                              class: 'form-control datepicker' %>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm">
+                    <div class="form-group">
+                      <%= label_tag :for_whodunnit, 'Find events triggered by a particular person...', class: 'control-label' %>
+                      <%= text_field_tag :for_whodunnit, @filter[:for_whodunnit], class: 'form-control',
+                            help: "You can use a partial name and it's not case sensitive" %>
+                    </div>
+                    <div class="form-group">
+                      <%= label_tag :for_event, 'Find events of a particular type...', class: 'control-label' %>
+                      <%= select_tag :for_event,
+                            options_for_select(Audit::SELECTABLE_EVENT_TYPES, @filter[:for_event]),
+                            { prompt: "Please select a type...", class: 'form-control' } %>
+                    </div>
+                  </div>
+                  <div class="col-sm">
+                    <div class="form-group">
+                      <%= label_tag :for_item_type, 'Find events for a particular item type...', class: 'control-label' %>
+                      <%= select_tag :for_item_type,
+                            content_tag(:option, 'Please select a type...', value: "") +
+                            options_from_collection_for_select(
+                              Audit::selectable_item_types,
+                              :to_s,
+                              proc { |t| Audit.humanize(t) },
+                              @filter[:for_item_type]
+                            ),
+                            { class: 'form-control' } %>
+                    </div>
+                    <div class="form-group">
+                      <%= label_tag :for_item_id, 'Find events for a particular item id...', class: 'control-label' %>
+                      <%= text_field_tag :for_item_id, @filter[:for_item_id], class: 'form-control' %>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <div class="form-group float-right">
+                      <%= link_to audits_clear_filter_path, class: 'btn btn-light btn-xs' do %>
+                        <i class="fa fa-times"></i> Clear filter
+                      <% end %>
+                      <%= button_tag(type: "submit", class: "btn btn-primary btn-xs") do %>
+                        <i class="fa fa-filter"></i> Apply filter
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive mt-3 d-none d-sm-block">
+        <table class="table table-striped vertical-align-middle">
+          <thead>
+            <tr>
+              <th><%= sortable 'created_at', @filter, audits_path, 'Event date' %></th>
+              <th><%= sortable 'id', @filter, audits_path, 'Event id' %></th>
+              <th><%= sortable 'event', @filter, audits_path, 'Event' %></th>
+              <th><%= sortable 'item_type', @filter, audits_path, 'Item type' %></th>
+              <th><%= sortable 'item_id', @filter, audits_path, 'Item id' %></th>
+              <th><%= sortable 'whodunnit', @filter, audits_path, 'Whodunnit' %></th>
+              <th> </th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @audits.each do |audit| %>
+            <tr>
+              <td><%= audit.created_at %> </td>
+              <td><%= audit.id %> </td>
+              <td><%= audit_event_label audit.event %> </td>
+              <td><%= audit.humanized_item_type %> </td>
+              <td><%= audit.item_id %> </td>
+              <td><%= audit.whodunnit %> </td>
+              <td class="text-right">
+                <%= link_to audit_path(audit), class: 'btn btn-primary btn-xs' do %>
+                  <i class="fa fa-folder-open"></i> View
+                <% end %>
+              </td>
+            </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+      <ul class="list-group list-group-striped d-block d-sm-none">
+        <% @audits.each do |audit| %>
+        <li class="list-group-item">
+          <div class="float-right">
+            <%= link_to audit_path(audit), :class => 'btn btn-primary btn-xs' do %>
+              <i class="fa fa-folder-open"></i> View
+            <% end %>
+          </div>
+          <strong><%= audit.created_at %></strong><br/>
+          <%= audit.humanized_item_type %> :: <%= audit.event.humanize %><br/>
+          <%= audit.whodunnit %>
+        </li>
+        <% end %>
+      </ul>
+    </div>
+    <div class="ibox-footer">
+      <div class="row d-none d-sm-block">
+        <div class="col">
+          <%= page_entries_info @audits %>
+        </div>
+        <div class="col">
+          <div class="d-flex align-items-center flex-row-reverse">
+            <%= paginate @audits %>
+          </div>
+        </div>
+      </div>
+      <div class="d-block d-sm-none">
+        <div class="text-center mb-2"><%= page_entries_info @audits %></div>
+        <div class="d-flex justify-content-center flex-row-reverse"><%= paginate @audits %></div>
+      </div>
+    </div>
+  </div>
+</div>

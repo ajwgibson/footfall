@@ -1,0 +1,111 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+  <div class="ibox">
+    <div class="ibox-title">
+      <div class="ibox-tools">
+        <%= link_to new_user_path, class: "btn btn-primary btn-xs btn-w-m" do %>
+          <i class="far fa-plus-square"></i> New user
+        <% end %>
+        <span class="btn btn-<%= @filter.except(:order_by).empty? ? "secondary" : "warning" %> btn-xs btn-w-m"
+          data-toggle="collapse" data-target="#filter">
+          <i class="fa fa-filter"></i> Filter
+          <span class="caret"></span>
+        </span>
+      </div>
+    </div>
+    <div class="ibox-content">
+      <div class="row d-print-none">
+        <div class="col">
+          <div id="filter" class="collapse">
+            <div class="card">
+              <div class="card-body">
+              <%= form_tag users_path, method: :get, class: "filter" do |f| %>
+                <%= hidden_field_tag :order_by, @filter[:order_by] %>
+                <div class="row">
+                  <div class="col-sm">
+                    <div class="form-group">
+                      <%= label_tag :with_email, 'Find users whose emails contain...', :class => 'control-label' %>
+                      <%= text_field_tag :with_email, @filter[:with_email], :class => 'form-control' %>
+                    </div>
+                  </div>
+                  <div class="col-sm">
+                    <div class="form-group">
+                      <%= label_tag :with_name, 'Find users whose names contain...', :class => 'control-label' %>
+                      <%= text_field_tag :with_name, @filter[:with_name], :class => 'form-control' %>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <div class="form-group float-right">
+                      <%= link_to users_clear_filter_path, :class => 'btn btn-light btn-xs' do %>
+                        <i class="fa fa-times"></i> Clear filter
+                      <% end %>
+                      <%= button_tag(type: "submit", class: "btn btn-primary btn-xs") do %>
+                        <i class="fa fa-filter"></i> Apply filter
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive mt-3 d-none d-sm-block">
+        <table class="table table-striped vertical-align-middle">
+          <thead>
+            <tr>
+              <th></th>
+              <th><%= sortable 'first_name, last_name', @filter, users_path, 'Name' %></th>
+              <th><%= sortable 'email', @filter, users_path, 'Email' %></th>
+              <th><%= sortable 'current_sign_in_at', @filter, users_path, 'Last signed in' %></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @users.each do |user| %>
+            <tr>
+              <td><%= show_avatar_xs(user) %></td>
+              <td><%= user.full_name %></td>
+              <td><%= user.email %></td>
+              <td><%= user.current_sign_in_at %></td>
+              <td class="text-right">
+                <%= link_to user_path(user), class: "btn btn-primary btn-xs" do %>
+                  <i class="fa fa-folder-open"></i> View
+                <% end%>
+              </td>
+            </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+      <ul class="list-group list-group-striped d-block d-sm-none">
+        <% @users.each do |user| %>
+        <li class="list-group-item">
+          <div class="float-right">
+            <%= link_to user_path(user), :class => 'btn btn-primary btn-xs' do %>
+              <i class="fa fa-folder-open"></i> View
+            <% end %>
+          </div>
+          <div class="mb-2"><%= show_avatar_xs(user) %></div>
+          <strong><%= user.full_name %></strong><br/>
+          <small><i>Last signed in at <%= user.current_sign_in_at ||= '... never' %></i></small>
+        </li>
+        <% end %>
+      </ul>
+    </div>
+    <div class="ibox-footer">
+      <div class="row">
+        <div class="col">
+          <%= page_entries_info @users %>
+        </div>
+        <div class="col">
+          <div class="d-flex align-items-center flex-row-reverse">
+            <%= paginate @users %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

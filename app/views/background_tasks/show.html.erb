@@ -1,0 +1,101 @@
+
+<div class="wrapper wrapper-content animated fadeInRight">
+
+<div class="row">
+  <div class="col-lg-9">
+    <div class="ibox ">
+      <div class="ibox-title">
+        <div style="display: flex; align-items: center;">
+          <h3 style="" class="ml-3">
+            <%= @background_task.task_type.humanize %>
+          </h3>
+        </div>
+      </div>
+      <div class="ibox-content">
+        <div class="row">
+          <div class="col-md-6">
+            <% common_locals = { dt_width: '6', dd_width: '6' } %>
+            <%= render partial: 'show_detail_row',
+                  locals: common_locals.merge({ label: "Status", value: @background_task.status.humanize }) %>
+            <%= render partial: 'show_detail_row',
+                  locals: common_locals.merge({ label: "Outcome", value: @background_task.outcome.humanize }) %>
+            <%= render partial: 'show_detail_row',
+                  locals: common_locals.merge({ label: "Started at", value: @background_task.started_at }) %>
+            <%= render partial: 'show_detail_row',
+                  locals: common_locals.merge({ label: "Finished at", value: @background_task.finished_at }) %>
+            <%= render partial: 'show_detail_row',
+                  locals: common_locals.merge({
+                    label: "Duration",
+                    value: @background_task.finished_at && @background_task.started_at ?
+                      distance_of_time_in_words(
+                        @background_task.started_at,
+                        @background_task.finished_at,
+                        include_seconds: true)
+                      : @background_task.started_at ?
+                        distance_of_time_in_words(
+                          @background_task.started_at,
+                          Time.now,
+                          include_seconds: true) + ' so far...'
+                        : ''
+                  }) %>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="p-2 bd-highlight">
+              <pre class="pre-scrollable"><%= JSON.pretty_generate @background_task.info %></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-3 d-print-none">
+    <div class="ibox ">
+      <div class="ibox-title">
+        <h3>Actions</h3>
+      </div>
+      <div class="ibox-content">
+        <div class="row">
+          <div class="col-sm-6 col-lg-12">
+
+            <% if can? :destroy, @background_task %>
+            <div>
+              <a class="btn btn-outline btn-block btn-danger mb-2 text-danger" data-toggle='modal' data-target='#delete'><i class="fa fa-times"></i> Delete this background task</a>
+            </div>
+            <% end %>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div class="modal inmodal" id="delete" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content animated flipInY">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+        <i class="fa fa-bomb modal-icon"></i>
+        <h4 class="modal-title">Warning</h4>
+        <small class="font-bold">You are about to delete a background task record!</small>
+      </div>
+      <div class="modal-body">
+        <p>
+          If you continue with this action you will delete this record.
+          This action <strong><em>cannot be reversed</em></strong>, so you should
+          think carefully before continuing.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <%= form_for [@background_task], method: :delete, :html => { :class => "background_task" } do |f| %>
+        <button type="button" class="btn btn-white" data-dismiss="modal">Cancel (don't delete)</button>
+        <button type="submit" class="btn btn-danger">Continue (delete)</button>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

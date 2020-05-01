@@ -1,0 +1,12 @@
+<% if resource.errors.any? %>
+  <div class="card border-danger">
+    <div class="card-body text-danger">
+      <h4 class="card-title">Errors</h4>
+      <ul class="list-group list-group-flush text-left">
+        <% resource.errors.full_messages.each do |message| %>
+          <li class="list-group-item"><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+<% end %>

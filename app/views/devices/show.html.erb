@@ -1,0 +1,302 @@
+
+<div class="wrapper wrapper-content animated fadeInRight">
+  <div class="row">
+    <div class="col-lg-9">
+      <div class="ibox ">
+        <div class="ibox-title">
+          <h3><%= @device.device_id %></h3>
+        </div>
+        <div class="ibox-content">
+          <div class="row">
+            <div class="col-md-12">
+              <%= render partial: 'show_detail_row', locals: { label: "Device ID", value: @device.device_id } %>
+
+              <%= render partial: 'show_detail_row', locals: {
+                    label: "Device group",
+                    value: @device&.device_group&.name,
+                    details: @device.device_group.nil? ? nil : device_group_path(@device.device_group)
+                  } %>
+
+              <%= render partial: 'show_detail_row', locals: { label: "Location", value: @device.location_as_string } %>
+
+              <div id="map" class="mt-2 mb-4" style="width: 100%; height: 400px;"></div>
+
+              <%= render partial: 'show_detail_row', locals: { label: "Footfall", value: device_footfall_status(@device) } %>
+              <%= render partial: 'show_detail_row', locals: { label: "Battery", value: device_battery_status(@device) } %>
+
+              <%= render partial: 'show_detail_row', locals: {
+                    label: "Footfall amber warning threshold",
+                    value: @device.footfall_threshold_amber
+                  } %>
+
+              <%= render partial: 'show_detail_row', locals: {
+                    label: "Footfall red warning threshold",
+                    value: @device.footfall_threshold_red
+                  } %>
+
+              <%= render partial: 'show_detail_row', locals: {
+                    label: "Battery amber warning threshold",
+                    value: "#{@device.battery_threshold_amber}%"
+                  } %>
+
+              <%= render partial: 'show_detail_row', locals: {
+                    label: "Battery red warning threshold",
+                    value: "#{@device.battery_threshold_red}%"
+                  } %>
+
+              <dl class="mb-0">
+                <dt>Notes</dt>
+                <dd class="mb-1">
+                <%= simple_format(@device.notes) %> &nbsp;
+                </dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3 d-print-none">
+      <div class="ibox ">
+        <div class="ibox-title">
+          <h3>Actions</h3>
+        </div>
+        <div class="ibox-content">
+          <div class="row">
+            <div class="col-sm-6 col-lg-12">
+              <% if can? :edit, @device %>
+              <div>
+                <%= link_to edit_device_path, :class => 'btn btn-outline btn-block btn-primary mb-2' do %>
+                  <i class="fa fa-edit"></i> Edit details
+                <% end %>
+              </div>
+              <% end %>
+
+              <% if can? :manage, DeviceDataRecord %>
+              <div>
+                <%= link_to device_data_records_path(with_device_id: @device.device_id),
+                      :class => 'btn btn-outline btn-block btn-success mb-2' do %>
+                  <i class="fas fa-stream"></i> View device records
+                <% end %>
+              </div>
+              <% end %>
+
+              <% if can? :manage, Audit %>
+              <div>
+                <%= link_to audits_path_for(@device), :class => 'btn btn-outline btn-block btn-info mb-2' do %>
+                  <i class="fa fa-camera"></i> View audit
+                <% end %>
+              </div>
+              <% end %>
+
+              <% if can? :destroy, @device %>
+              <div>
+                <a class="btn btn-outline btn-block btn-danger mb-2 text-danger"
+                    data-toggle='modal' data-target='#delete'>
+                  <i class="fa fa-times"></i> Delete this device
+                </a>
+              </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-8">
+      <div class="ibox ">
+        <div class="ibox-title">
+          <h3>Recent footfall data</h3>
+        </div>
+        <div class="ibox-content">
+          <canvas id="FootfallData" width="100%" height="40"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-4">
+      <div class="ibox ">
+        <div class="ibox-title">
+          <h3>Active alarms</h3>
+        </div>
+        <div class="ibox-content">
+          <div class="table-responsive mt-3 d-none d-sm-block">
+            <table class="table table-striped vertical-align-middle">
+              <thead>
+                <tr>
+                  <th>Alarm type</th>
+                  <th>Level</th>
+                  <th>Created</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @device.alarms.active.each do |alarm| %>
+                <tr>
+                  <td><%= alarm_type_label(alarm) %></td>
+                  <td><%= alarm_level_label(alarm) %></td>
+                  <td><%= l(alarm.created_at, format: :long) %></td>
+                  <td class="text-right">
+                    <%= link_to alarm_path(alarm), class: "btn btn-primary btn-xs" do %>
+                      <i class="fa fa-folder-open"></i> View
+                    <% end%>
+                  </td>
+                </tr>
+                <% end %>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="4">
+                    <i><%= pluralize(@device.alarms.active.count, 'active alarm') %></i>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal inmodal" id="delete" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content animated flipInY">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">
+          <span aria-hidden="true">×</span><span class="sr-only">Close</span>
+        </button>
+        <i class="fa fa-bomb modal-icon"></i>
+        <h4 class="modal-title">Warning</h4>
+        <small class="font-bold">You are about to delete a device!</small>
+      </div>
+      <div class="modal-body">
+        <p>
+          If you continue with this action you will delete this record.
+          This action <strong><em>cannot be reversed</em></strong>, so you should
+          think carefully before continuing.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <%= form_for [@device], method: :delete, :html => { :class => "device" } do |f| %>
+        <button type="button" class="btn btn-white" data-dismiss="modal">Cancel (don't delete)</button>
+        <button type="submit" class="btn btn-danger">Continue (delete)</button>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<%= javascript_tag do %>
+
+  var colours = {
+    blue:   { normal: "rgba(93,  165, 218, 1)", highlight: "rgba(93,  165, 218, 0.9)", lowlight: "rgba(93,  165, 218, 0.5)" },
+    green:  { normal: "rgba(96,  189, 104, 1)", highlight: "rgba(96,  189, 104, 0.9)", lowlight: "rgba(96,  189, 104, 0.5)" },
+    pink:   { normal: "rgba(241, 124, 176, 1)", highlight: "rgba(241, 124, 176, 0.9)", lowlight: "rgba(241, 124, 176, 0.5)" },
+    brown:  { normal: "rgba(178, 145, 47,  1)", highlight: "rgba(178, 145, 47,  0.9)", lowlight: "rgba(178, 145, 47,  0.5)" },
+    purple: { normal: "rgba(178, 118, 178, 1)", highlight: "rgba(178, 118, 178, 0.9)", lowlight: "rgba(178, 118, 178, 0.5)" },
+    silver: { normal: "rgba(192, 192, 192, 1)", highlight: "rgba(192, 192, 192, 0.9)", lowlight: "rgba(192, 192, 192, 0.5)" },
+    yellow: { normal: "rgba(222, 207, 63,  1)", highlight: "rgba(222, 207, 63,  0.9)", lowlight: "rgba(222, 207, 63,  0.5)" },
+    red:    { normal: "rgba(241, 88,  84,  1)", highlight: "rgba(241, 88,  84,  0.9)", lowlight: "rgba(241, 88,  84,  0.5)" },
+    orange: { normal: "rgba(250, 164, 58,  1)", highlight: "rgba(250, 164, 58,  0.9)", lowlight: "rgba(250, 164, 58,  0.5)" },
+    gray:   { normal: "rgba(77,  77,  77,  1)", highlight: "rgba(77,  77,  77,  0.9)", lowlight: "rgba(77,  77,  77,  0.5)" },
+  };
+
+  var normal_colours    = Object.values(colours).map(function(item) { return item['normal']; });
+  var highlight_colours = Object.values(colours).map(function(item) { return item['highlight']; });
+  var lowlight_colours  = Object.values(colours).map(function(item) { return item['lowlight']; });
+
+
+  var map;
+
+  function initMap() {
+    let center = { lat: <%= @settings.default_latitude %>, lng: <%= @settings.default_longitude %> };
+    let zoom = <%= @settings.default_zoom_no_location %>;
+
+    <% if @device.latitude.present? && @device.longitude.present? %>
+    center = { lat: <%= @device.latitude %>, lng: <%= @device.longitude %> };
+    zoom = <%= @settings.default_zoom_specific_location %>;
+    <% end %>
+
+    map = new google.maps.Map(
+      document.getElementById('map'), {
+        center: center,
+        zoom: zoom
+      }
+    );
+
+    <% if @device.latitude.present? && @device.longitude.present? %>
+    let marker = new google.maps.Marker({ position: center, map: map });
+    <% end %>
+  }
+
+  $(function() {
+    new Chart("FootfallData", {
+      type: 'line',
+      data: {
+        labels: <%= raw @data.map { |d| d.recorded_at.to_s } %>,
+        datasets: [
+          {
+            data: <%= raw @data.map { |d| d.footfall } %>,
+            borderColor: normal_colours[1],
+            backgroundColor: lowlight_colours[1],
+            borderWidth: 2,
+            pointRadius: 1,
+            lineTension: 0
+          }
+        ]
+      },
+      options: {
+        scales: {
+          xAxes: [{
+            type: 'time',
+            offset: true,
+            time: {
+              unit: 'hour',
+              displayFormats: {
+                hour: 'MMM D, hA'
+              }
+            },
+            maxBarThickness: 30,
+          }],
+          yAxes: [{
+            ticks: {
+              beginAtZero:true
+            }
+          }],
+          maintainAspectRatio: false
+        },
+        legend: { display: false },
+        annotation: {
+          annotations: [
+            {
+              type: 'line',
+              drawTime: 'beforeDatasetsDraw',
+              mode: 'horizontal',
+              scaleID: 'y-axis-0',
+              value: <%= @device.footfall_threshold_red %>,
+              borderColor: colours['red']['normal'],
+              borderWidth: 2,
+            },
+            {
+              type: 'line',
+              drawTime: 'beforeDatasetsDraw',
+              mode: 'horizontal',
+              scaleID: 'y-axis-0',
+              value: <%= @device.footfall_threshold_amber %>,
+              borderColor: colours['orange']['normal'],
+              borderWidth: 2,
+            }
+          ]
+        }
+      }
+    });
+  });
+
+<% end %>
+
+
+<%= javascript_include_tag "https://maps.googleapis.com/maps/api/js?key=#{Rails.configuration.x.google.maps_api_key}&callback=initMap" %>

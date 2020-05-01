@@ -1,0 +1,130 @@
+@mixin avatar-ctr($size) {
+  position: relative;
+  width: $size;
+  height: $size;
+  font-size: $size*0.25;
+
+  .fa,
+  .fas,
+  .far {
+    background-image: radial-gradient(at center, white 50%, transparent 50%);
+  }
+
+  .left {
+    left: 0;
+  }
+
+  .top {
+    top: 0;
+  }
+
+  .right {
+    right: $size*0.06;
+  }
+
+  .bottom {
+    bottom: $size*0.06;
+  }
+
+  >* {
+    position: absolute;
+  }
+}
+
+.avatar-container-centred {
+  margin: auto;
+}
+
+.avatar-container,
+.avatar-container-md {
+  @include avatar-ctr(48px);
+}
+
+.avatar-container-sm {
+  @include avatar-ctr(36px);
+}
+
+.avatar-container-xs {
+  @include avatar-ctr(24px);
+}
+
+.avatar-container-lg {
+  @include avatar-ctr(72px);
+}
+
+@include media-breakpoint-up(lg) {
+
+  .avatar-container,
+  .avatar-container-md {
+    @include avatar-ctr(72px);
+  }
+
+  .avatar-container-sm {
+    @include avatar-ctr(48px);
+  }
+
+  .avatar-container-xs {
+    @include avatar-ctr(36px);
+  }
+
+  .avatar-container-lg {
+    @include avatar-ctr(100px);
+  }
+}
+
+@mixin avatar($size) {
+  width: $size;
+  height: $size;
+  background-color: $navy;
+  text-align: center;
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+
+  .initials {
+    position: relative;
+    top: $size*0.25;
+    font-size: $size*0.5;
+    line-height: $size*0.5;
+    color: #fff;
+    font-family: monospace;
+    font-weight: bold;
+  }
+}
+
+.avatar-circle,
+.avatar-circle-md {
+  @include avatar(48px);
+}
+
+.avatar-circle-sm {
+  @include avatar(36px);
+}
+
+.avatar-circle-xs {
+  @include avatar(24px);
+}
+
+.avatar-circle-lg {
+  @include avatar(72px);
+}
+
+@include media-breakpoint-up(lg) {
+
+  .avatar-circle,
+  .avatar-circle-md {
+    @include avatar(72px);
+  }
+
+  .avatar-circle-sm {
+    @include avatar(48px);
+  }
+
+  .avatar-circle-xs {
+    @include avatar(36px);
+  }
+
+  .avatar-circle-lg {
+    @include avatar(100px);
+  }
+}

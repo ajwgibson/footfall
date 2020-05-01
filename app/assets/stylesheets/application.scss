@@ -1,0 +1,119 @@
+/*
+ *= require animate/animate.css
+ *= require toastr/toastr.min.css
+ *= require sweetalert/sweetalert.css
+ *= require datepicker/datepicker3.css
+ */
+
+// Google Fonts
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&lang=en");
+
+@import "bootstrap";
+
+// Variables, Mixins
+@import "base/variables";
+@import "base/mixins";
+
+// INSPINIA Theme Elements
+@import "base/typography";
+@import "base/glyphicons";
+@import "base/navigation";
+@import "base/top_navigation";
+@import "base/buttons";
+@import "base/badges_labels";
+@import "base/elements";
+@import "base/sidebar";
+@import "base/base";
+@import "base/pages";
+@import "base/chat";
+@import "base/metismenu";
+@import "base/spinners";
+
+// Landing page
+@import "base/landing";
+
+// INSPINIA Skins
+@import "base/skins";
+@import "base/md-skin";
+
+// Media query style
+@import "base/media";
+
+// Custom style
+// Your custom style to override base style
+@import "base/custom";
+
+
+@import "avatars.scss";
+
+
+// Clear layout on print mode
+@media print {
+  nav.navbar-static-side {
+    display: none;
+  }
+
+  body {
+    overflow: visible !important;
+  }
+
+  #page-wrapper {
+    margin: 0;
+  }
+}
+
+.form-signin {
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: auto;
+
+  .form-control {
+    position: relative;
+    box-sizing: border-box;
+    height: auto;
+    padding: 10px;
+    font-size: 16px;
+  }
+}
+
+
+table.vertical-align-middle tbody tr td {
+  vertical-align: middle;
+}
+
+
+@mixin asterisk-before() {
+  margin-right: 5px;
+  font-family: "Glyphicons Halflings";
+  content: "\002a";
+  font-weight: bold;
+  color: $navy;
+}
+
+span.required-legend:before {
+  @include asterisk-before();
+}
+
+label.required:before {
+  @include asterisk-before();
+}
+
+
+legend {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+
+.ibox-tools {
+
+  a.btn-info,
+  a.btn-warning {
+    color: #fff !important;
+  }
+
+  span.btn {
+    margin-left: 5px;
+  }
+}

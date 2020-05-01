@@ -1,0 +1,170 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+  <div class="ibox ">
+    <div class="ibox-title">
+      <% if @device.id %>
+        <h3> <%= @device.device_id %> </h3>
+      <% end %>
+      Please note that <span class="required-legend">indicates a required field</span>
+    </div>
+    <div class="ibox-content">
+      <div class="row">
+        <div class="col">
+          <%= render partial: "layouts/errors", object: @device, as: 'form' %>
+
+          <%= bootstrap_form_for(@device, inline_errors: false, html: { class: 'mt-3' }) do |f| %>
+
+            <fieldset class="mb-4">
+              <legend class="mb-3 border-bottom">Basic details</legend>
+              <div class="row">
+                <div class="col-sm-6">
+                  <%= f.text_field :device_id, :label => 'Device ID' %>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-sm-6">
+                  <%= f.collection_select :device_group_id, @device_groups, :id, :name,
+                        { label: 'Device group', include_blank: 'Select a device group if appropriate...' } %>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="mb-4">
+              <legend class="mb-3 border-bottom">Device location</legend>
+              <div class="row">
+                <div class="col-sm">
+                  <%= f.text_field :latitude,  :label => 'Latitude' %>
+                  <%= f.text_field :longitude, :label => 'Longitude' %>
+                  <p class="text-muted">
+                    You can also click on the map to select the location...
+                  </p>
+                </div>
+                <div class="col-sm">
+                  <div id="map" style="width: 100%; height: 400px;"></div>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="mb-4">
+              <legend class="mb-3 border-bottom">Current status</legend>
+              <div class="row">
+                <div class="col-sm-6">
+                  <%= f.number_field :footfall,
+                      label: 'Footfall',
+                      help: 'Most recent known footfall ... not normally entered manually',
+                      min: 1, max: 999, step: 1 %>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6">
+                  <%= f.number_field :battery,
+                      label: 'Battery',
+                      help: 'Most recent known battery percentage ... not normally entered manually',
+                      append: '%',
+                      min: 0, max: 100, step: 1 %>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="mb-4">
+              <legend class="mb-3 border-bottom">Alarm thresholds</legend>
+              <div class="row">
+                <div class="col-sm">
+                  <%= f.number_field :footfall_threshold_amber,
+                        label: 'Footfall amber warning threshold',
+                        min: 1, max: 999, step: 1 %>
+                </div>
+                <div class="col-sm">
+                  <%= f.number_field :footfall_threshold_red,
+                        label: 'Footfall red warning threshold',
+                        min: 1, max: 999, step: 1 %>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-sm">
+                  <%= f.number_field :battery_threshold_amber,
+                        label: 'Battery amber warning threshold',
+                        append: '%',
+                        min: 1, max: 99, step: 1 %>
+                </div>
+                <div class="col-sm">
+                  <%= f.number_field :battery_threshold_red,
+                        label: 'Battery red warning threshold',
+                        append: '%',
+                        min: 1, max: 99, step: 1 %>
+                </div>
+              </div>
+            </fieldset>
+
+            <div class="row">
+              <div class="col">
+                <%= f.text_area :notes, label: 'Notes', rows: 5 %>
+              </div>
+            </div>
+
+            <div class="mt-2 float-right">
+              <%= button_tag(type: "submit", class: "btn btn-w-m btn-primary") do %>
+                <i class="fa fa-check"></i> Save
+              <% end %>
+              <%= link_to @cancel_path, :class => 'btn btn-w-m btn-default' do %>
+                <i class="fa fa-times"></i> Cancel
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<%= javascript_tag do %>
+
+  var map = null;
+  var marker = null;
+
+  function initMap() {
+    let center = { lat: <%= @settings.default_latitude %>, lng: <%= @settings.default_longitude %> };
+    let zoom = <%= @settings.default_zoom_no_location %>;
+
+    <% if @device.latitude.present? && @device.longitude.present? %>
+    center = { lat: <%= @device.latitude %>, lng: <%= @device.longitude %> };
+    zoom = <%= @settings.default_zoom_specific_location %>;
+    <% end %>
+
+    map = new google.maps.Map(
+      document.getElementById('map'), {
+        center: center,
+        zoom: zoom
+      }
+    );
+
+    <% if @device.latitude.present? && @device.longitude.present? %>
+    marker = new google.maps.Marker({ position: center, map: map });
+    <% end %>
+
+    map.addListener('click', function(e) {
+      placeMarkerAndPanTo(e.latLng, map);
+    });
+  }
+
+  function placeMarkerAndPanTo(latLng, map) {
+    if (marker == null) {
+      marker = new google.maps.Marker({
+        position: latLng,
+        map: map
+      });
+    } else {
+      marker.setPosition(latLng);
+    }
+
+    map.panTo(latLng);
+
+    $("#device_latitude").val(latLng.lat);
+    $("#device_longitude").val(latLng.lng);
+  }
+
+<% end %>
+
+<%= javascript_include_tag "https://maps.googleapis.com/maps/api/js?key=#{Rails.configuration.x.google.maps_api_key}&callback=initMap" %>

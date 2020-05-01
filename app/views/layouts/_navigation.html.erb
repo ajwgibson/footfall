@@ -1,0 +1,79 @@
+<nav class="navbar-default navbar-static-side" role="navigation">
+  <div class="sidebar-collapse">
+    <ul class="nav metismenu" id="side-menu">
+
+      <li class="nav-header">
+        <div class="dropdown profile-element">
+          <%= show_avatar_small(current_user) %>
+          <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+            <span class="block m-t-xs font-bold"><%= current_user.full_name %></span>
+            <span class="text-muted text-xs block">System User <b class="caret"></b></span>
+          </a>
+          <ul class="dropdown-menu animated fadeInRight m-t-xs">
+            <li><%= link_to 'Profile', profile_index_path, class: 'dropdown-item' %></li>
+            <li><%= link_to 'Change password', edit_user_registration_path, class: 'dropdown-item' %></li>
+            <li><%= link_to 'Change picture', profile_picture_path, class: 'dropdown-item' %></li>
+            <li class="dropdown-divider"></li>
+            <li><%= link_to 'Sign out', destroy_user_session_path, method: :delete, class: 'dropdown-item' %></li>
+          </ul>
+        </div>
+      </li>
+
+      <li class="<%= 'active' if current_page?('/') %>">
+        <%= link_to "/" do %>
+          <i class="fas fa-fw fa-tachometer-alt"></i> <span class="nav-label">Dashboard</span>
+        <% end %>
+      </li>
+
+      <li class="<%= 'active' if 'devices' == controller.controller_name %>">
+        <%= link_to devices_path do %>
+          <i class="fas fa-fw fa-upload"></i> <span class="nav-label">Devices</span>
+        <% end %>
+      </li>
+
+      <li class="<%= 'active' if 'device_groups' == controller.controller_name %>">
+        <%= link_to device_groups_path do %>
+          <i class="fas fa-fw fa-object-group"></i> <span class="nav-label">Device groups</span>
+        <% end %>
+      </li>
+
+      <li class="<%= 'active' if 'device_data_records' == controller.controller_name %>">
+        <%= link_to device_data_records_path do %>
+          <i class="fas fa-fw fa-stream"></i> <span class="nav-label">Device records</span>
+        <% end %>
+      </li>
+
+      <li class="<%= 'active' if 'alarms' == controller.controller_name %>">
+        <%= link_to alarms_path do %>
+          <i class="fas fa-fw fa-bell"></i> <span class="nav-label">Alarms</span>
+        <% end %>
+      </li>
+
+      <li class="<%= 'active' if (
+          ['users', 'audits', 'background_tasks', 'settings']
+          .include?(controller.controller_name)
+        ) %>">
+        <a href="#">
+          <i class="fa fa-fw fa-cogs"></i>
+          <span class="nav-label">System admin </span>
+          <span class="fa arrow"></span>
+        </a>
+        <ul class="nav nav-second-level collapse">
+          <li class="<%= 'active' if (controller.controller_name == 'users') %>">
+            <%= link_to 'System users', users_path(with_status: :active) %>
+          </li>
+          <li class="<%= 'active' if (controller.controller_name == 'background_tasks') %>">
+            <%= link_to 'Background tasks', background_tasks_path %>
+          </li>
+          <li class="<%= 'active' if (controller.controller_name == 'audits') %>">
+            <%= link_to 'Audited events', audits_path %>
+          </li>
+          <li class="<%= 'active' if (controller.controller_name == 'settings') %>">
+            <%= link_to 'System settings', settings_path %>
+          </li>
+        </ul>
+      </li>
+
+    </ul>
+  </div>
+</nav>

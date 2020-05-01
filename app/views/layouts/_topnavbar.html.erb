@@ -1,0 +1,18 @@
+<div class="row border-bottom">
+  <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+    <div class="navbar-header">
+      <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+      <div role="search" class="navbar-form-custom">
+        <div class="form-group">
+          <input type="text" class="form-control typeahead-find-device"
+              name="top-search" id="top-search" placeholder="Find a device...">
+        </div>
+      </div>
+    </div>
+    <ul class="nav navbar-top-links navbar-right">
+      <li>
+        <%= link_to 'Sign out', destroy_user_session_path, method: :delete, class: '' %>
+      </li>
+    </ul>
+  </nav>
+</div>

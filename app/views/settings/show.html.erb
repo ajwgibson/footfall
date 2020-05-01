@@ -1,0 +1,96 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+
+  <div class="row">
+    <div class="col-lg-9">
+      <div class="ibox ">
+        <div class="ibox-content">
+          <fieldset class="mb-4">
+            <legend class="mb-3 border-bottom">Device defaults</legend>
+            <%=
+              render partial: 'show_detail_row', locals: {
+                label: "Footfall amber warning threshold",
+                value: @settings.default_footfall_threshold_amber
+              }
+            %>
+            <%=
+              render partial: 'show_detail_row', locals: {
+                label: "Footfall red warning threshold",
+                value: @settings.default_footfall_threshold_red
+              }
+            %>
+            <%=
+              render partial: 'show_detail_row', locals: {
+                label: "Battery amber warning threshold",
+                value: "#{@settings.default_battery_threshold_amber}%"
+              }
+            %>
+            <%=
+              render partial: 'show_detail_row', locals: {
+                label: "Battery red warning threshold",
+                value: "#{@settings.default_battery_threshold_red}%"
+              }
+            %>
+          </fieldset>
+
+          <fieldset class="mb-4">
+            <legend class="mb-3 border-bottom">Mapping defaults</legend>
+            <%=
+              render partial: 'show_detail_row', locals: {
+                label: "Default map centre latitude",
+                value: @settings.default_latitude
+              }
+            %>
+            <%=
+              render partial: 'show_detail_row', locals: {
+                label: "Default map centre longitude",
+                value: @settings.default_longitude
+              }
+            %>
+            <%=
+              render partial: 'show_detail_row', locals: {
+                label: "Default map zoom when no specific location selected",
+                value: @settings.default_zoom_no_location
+              }
+            %>
+            <%=
+              render partial: 'show_detail_row', locals: {
+                label: "Default map zoom when a specific location is selected",
+                value: @settings.default_zoom_specific_location
+              }
+            %>
+          </fieldset>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3 d-print-none">
+      <div class="ibox ">
+        <div class="ibox-title">
+          <h3>Actions</h3>
+        </div>
+        <div class="ibox-content">
+          <div class="row">
+            <div class="col-sm-6 col-lg-12">
+
+              <% if can? :edit, @settings %>
+              <div>
+                <%= link_to edit_settings_path, :class => 'btn btn-outline btn-block btn-primary mb-2' do %>
+                  <i class="fa fa-edit"></i> Edit settings
+                <% end %>
+              </div>
+              <% end %>
+
+              <% if can? :manage, Audit %>
+              <div>
+                <%= link_to audits_path_for(@settings), :class => 'btn btn-outline btn-block btn-info mb-2' do %>
+                  <i class="fa fa-camera"></i> View audit
+                <% end %>
+              </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

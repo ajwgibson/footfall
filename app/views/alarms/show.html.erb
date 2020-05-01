@@ -1,0 +1,70 @@
+
+<div class="wrapper wrapper-content animated fadeInRight">
+  <div class="row">
+    <div class="col-lg-9">
+      <div class="ibox ">
+        <div class="ibox-title">
+          <h3><%= @alarm.device.device_id %></h3>
+        </div>
+        <div class="ibox-content">
+          <div class="row">
+            <div class="col-md-12">
+              <%= render partial: 'show_detail_row', locals: {
+                    label: "Device ID",
+                    value: @alarm.device.device_id,
+                    details: device_path(@alarm.device)
+                  } %>
+
+              <%= render partial: 'show_detail_row', locals: {
+                    label: "Device group",
+                    value: @alarm.device&.device_group&.name,
+                    details: @alarm.device.device_group.nil? ? nil : device_group_path(@alarm.device.device_group)
+                  } %>
+
+              <%= render partial: 'show_detail_row', locals: { label: "Alarm type", value: alarm_type_label(@alarm) } %>
+              <%= render partial: 'show_detail_row', locals: { label: "Level", value: alarm_level_label(@alarm) } %>
+              <%= render partial: 'show_detail_row', locals: { label: "Status", value: alarm_status_label(@alarm) } %>
+              <%= render partial: 'show_detail_row', locals: { label: "Triggering value", value: @alarm.value } %>
+              <%= render partial: 'show_detail_row', locals: { label: "Triggering threshold", value: @alarm.threshold } %>
+              <%= render partial: 'show_detail_row', locals: { label: "Created", value: l(@alarm.created_at, format: :long) } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3 d-print-none">
+      <div class="ibox ">
+        <div class="ibox-title">
+          <h3>Actions</h3>
+        </div>
+        <div class="ibox-content">
+          <div class="row">
+            <div class="col-sm-6 col-lg-12">
+
+              <% if (can? :manage, Alarm) && @alarm.active? %>
+              <div>
+                <%= form_tag(
+                      clear_alarm_path(@alarm),
+                      { data: { warn: 'yes' }, method: :put }) do %>
+                  <button type="submit" class="btn btn-outline btn-block btn-success mb-2 text-success">
+                    <i class="fa fa-check"></i> Clear alarm
+                  </button>
+                <% end %>
+              </div>
+              <% end %>
+
+              <% if can? :manage, Audit %>
+              <div>
+                <%= link_to audits_path_for(@alarm), :class => 'btn btn-outline btn-block btn-info mb-2' do %>
+                  <i class="fa fa-camera"></i> View audit
+                <% end %>
+              </div>
+              <% end %>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,50 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+
+  <div class="ibox ">
+    <div class="ibox-title">
+      <% if @background_task.id %>
+        <div style="display: flex; align-items: center;">
+          <h3 style="" class="ml-3">
+            <%= @background_task.name %>
+          </h3>
+        </div>
+      <% else %>
+        Please note that <span class="required-legend">indicates a required field</span>
+      <% end %>
+    </div>
+    <div class="ibox-content">
+      <div class="row">
+        <div class="col-md-6">
+
+          <%= render partial: "layouts/errors", object: @background_task, as: 'form' %>
+
+          <%= bootstrap_form_for(
+                  @background_task,
+                  layout: :horizontal,
+                  inline_errors: false,
+                  html: { class: 'mt-3' },
+                  label_col: "col-sm-4",
+                  control_col: "col-sm-8") do |f| %>
+
+            <%= f.select :task_type,
+                  options_for_select(BackgroundTask.selectable_task_types, @background_task.task_type),
+                  { prompt: "Please select a task...", class: 'form-control' } %>
+
+            <div class="mt-2 float-right">
+              <%= button_tag(type: "submit", class: "btn btn-w-m btn-primary") do %>
+                <i class="fa fa-check"></i> Save
+              <% end %>
+              <%= link_to @cancel_path, :class => 'btn btn-w-m btn-default' do %>
+                <i class="fa fa-times"></i> Cancel
+              <% end %>
+            </div>
+
+          <% end %>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>

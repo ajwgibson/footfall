@@ -1,0 +1,104 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+  <div class="ibox">
+    <div class="ibox-title">
+      <div class="ibox-tools">
+        <%= link_to new_device_group_path, class: "btn btn-primary btn-xs btn-w-m" do %>
+          <i class="far fa-plus-square"></i> New device group
+        <% end %>
+        <span class="btn btn-<%= @filter.except(:order_by).empty? ? "secondary" : "warning" %> btn-xs btn-w-m"
+          data-toggle="collapse" data-target="#filter">
+          <i class="fa fa-filter"></i> Filter
+          <span class="caret"></span>
+        </span>
+      </div>
+    </div>
+    <div class="ibox-content">
+      <div class="row d-print-none">
+        <div class="col">
+          <div id="filter" class="collapse">
+            <div class="card">
+              <div class="card-body">
+              <%= form_tag device_groups_path, method: :get, class: "filter" do |f| %>
+                <%= hidden_field_tag :order_by, @filter[:order_by] %>
+                <div class="row">
+                  <div class="col-sm">
+                  </div>
+                  <div class="col-sm">
+                    <div class="form-group">
+                      <%= label_tag :with_name, 'Find device groups whose names contain...', :class => 'control-label' %>
+                      <%= text_field_tag :with_name, @filter[:with_name], :class => 'form-control' %>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <div class="form-group float-right">
+                      <%= link_to device_groups_clear_filter_path, :class => 'btn btn-light btn-xs' do %>
+                        <i class="fa fa-times"></i> Clear filter
+                      <% end %>
+                      <%= button_tag(type: "submit", class: "btn btn-primary btn-xs") do %>
+                        <i class="fa fa-filter"></i> Apply filter
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive mt-3 d-none d-sm-block">
+        <table class="table table-striped vertical-align-middle">
+          <thead>
+            <tr>
+              <th><%= sortable 'name', @filter, device_groups_path, 'Name' %></th>
+              <th>Device count</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @device_groups.each do |device_group| %>
+            <tr>
+              <td><%= device_group.name %></td>
+              <td><%= device_group.device_count %></td>
+              <td class="text-right">
+                <%= link_to device_group_path(device_group), class: "btn btn-primary btn-xs" do %>
+                  <i class="fa fa-folder-open"></i> View
+                <% end%>
+              </td>
+            </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+      <ul class="list-group list-group-striped d-block d-sm-none">
+        <% @device_groups.each do |device_group| %>
+        <li class="list-group-item">
+          <div class="float-right">
+            <%= link_to device_group_path(device_group), :class => 'btn btn-primary btn-xs' do %>
+              <i class="fa fa-folder-open"></i> View
+            <% end %>
+          </div>
+          <strong><%= device_group.name %></strong><br/>
+          <small>
+            <%= pluralize(device_group.device_count, 'device') %>
+          </small>
+        </li>
+        <% end %>
+      </ul>
+    </div>
+    <div class="ibox-footer">
+      <div class="row">
+        <div class="col">
+          <%= page_entries_info @device_groups %>
+        </div>
+        <div class="col">
+          <div class="d-flex align-items-center flex-row-reverse">
+            <%= paginate @device_groups %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

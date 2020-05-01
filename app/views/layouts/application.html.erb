@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Footfall :: Causeway Coding</title>
+
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= favicon_link_tag 'logo.png', :rel => 'shortcut icon' %>
+
+    <%= stylesheet_link_tag 'application', media: 'all' %>
+
+    <link rel="stylesheet"
+          href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+          integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay"
+          crossorigin="anonymous">
+
+    <%= javascript_include_tag 'application' %>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+  </head>
+
+<% if user_signed_in? && !devise_controller? %>
+
+  <body>
+
+    <!-- Wrapper-->
+    <div id="wrapper" class="<%= params[:controller] %>.<%= params[:action] %>">
+
+        <!-- Navigation -->
+        <%= render 'layouts/navigation' %>
+
+        <!-- Page wraper -->
+        <div id="page-wrapper" class="gray-bg <%= @extra_class %>">
+
+            <!-- Page wrapper -->
+            <%= render 'layouts/topnavbar' %>
+
+            <!-- Main view  -->
+            <%= render 'layouts/pagetitle' %>
+            <%= yield %>
+
+            <!-- Footer -->
+            <%= render 'layouts/footer' %>
+
+        </div>
+        <!-- End page wrapper-->
+
+    </div>
+    <!-- End wrapper-->
+
+<% else %>
+
+  <body class="gray-bg">
+
+    <div class="row h-100" id="devise">
+      <div class="col-sm-12 py-5 text-center my-auto">
+        <%= image_tag(
+              "logo-full-size.png",
+              class: 'd-block mx-auto mb-4',
+              alt: "Causeway Coding Logo",
+              width: "125", height: "125") %>
+
+        <h1>FOOTFALL</h1>
+
+        <p><i>A Causeway Coding application...</i></p>
+
+        <%= yield %>
+      </div>
+    </div>
+
+<% end %>
+
+  <div id="toastr-messages">
+    <%= toastr_flash %>
+  </div>
+
+  </body>
+
+</html>

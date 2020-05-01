@@ -1,0 +1,34 @@
+
+<div class="wrapper wrapper-content animated fadeInRight">
+
+  <div class="ibox">
+    <div class="ibox-title">
+      <div style="display: flex; align-items: center;">
+        <%= show_avatar_xs(current_user) %>
+        <h3 style="" class="ml-3">
+          <%= current_user.full_name %>
+        </h3>
+      </div>
+    </div>
+    <div class="ibox-content">
+      <div class="row">
+        <div class="col-md-6">
+          <%= render partial: 'show_detail_row', locals: { label: "First name", value: current_user.first_name } %>
+          <%= render partial: 'show_detail_row', locals: { label: "Last name", value: current_user.last_name } %>
+          <%= render partial: 'show_detail_row', locals: { label: "Email", value: current_user.email } %>
+          <%= render partial: 'show_detail_row', locals: { label: "Last sign-in", value: current_user.current_sign_in_at } %>
+          <%= render partial: 'show_detail_row', locals: { label: "Sign-in count", value: current_user.sign_in_count } %>
+
+          <dl class="mb-0">
+            <dt>Profile picture</dt>
+            <dd class="mb-1">
+            <%= image_tag(url_for(current_user.profile_picture), class: "img-fluid border") if current_user.profile_picture.attached? %> &nbsp;
+            </dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+

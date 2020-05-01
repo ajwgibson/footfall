@@ -1,0 +1,11 @@
+<div class="avatar-container<%= size %> <%= center ? 'avatar-container-centred' : '' %>">
+  <% unless user.avatar.nil? %>
+    <%= image_tag url_for(user.avatar), class: "avatar-circle"+size + " img-fluid top left" %>
+  <% else %>
+  <div class="avatar-circle<%= size %> top left">
+    <span class="initials">
+      <%= user.initials %>
+    </span>
+  </div>
+  <% end %>
+</div>

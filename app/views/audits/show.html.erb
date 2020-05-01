@@ -1,0 +1,26 @@
+
+<div class="wrapper wrapper-content animated fadeInRight">
+  <div class="row">
+    <div class="col">
+      <div class="ibox">
+        <div class="ibox-content">
+          <div class="d-flex align-items-stretch bd-highlight">
+            <div class="p-2 flex-fill bd-highlight">
+              <%= render partial: 'show_detail_row', locals: { label: "Event date", value: @audit.created_at } %>
+              <%= render partial: 'show_detail_row', locals: { label: "Event id", value: @audit.id } %>
+              <%= render partial: 'show_detail_row', locals: { label: "Event type", value: audit_event_label(@audit.event) } %>
+              <%= render partial: 'show_detail_row', locals: { label: "Item type", value: @audit.humanized_item_type } %>
+              <%= render partial: 'show_detail_row', locals: { label: "Item id", value: @audit.item_id } %>
+              <%= render partial: 'show_detail_row', locals: { label: "Whodunnit", value: @audit.whodunnit } %>
+            </div>
+            <div class="p-2 flex-fill bd-highlight">
+              <div>
+                <pre class="pre-scrollable"><%= JSON.pretty_generate @audit.object_changes %></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
