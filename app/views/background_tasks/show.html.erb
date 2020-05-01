@@ -14,17 +14,16 @@
       <div class="ibox-content">
         <div class="row">
           <div class="col-md-6">
-            <% common_locals = { dt_width: '6', dd_width: '6' } %>
             <%= render partial: 'show_detail_row',
-                  locals: common_locals.merge({ label: "Status", value: @background_task.status.humanize }) %>
+                  locals: { label: "Status", value: @background_task.status.humanize } %>
             <%= render partial: 'show_detail_row',
-                  locals: common_locals.merge({ label: "Outcome", value: @background_task.outcome.humanize }) %>
+                  locals: { label: "Outcome", value: @background_task.outcome.humanize } %>
             <%= render partial: 'show_detail_row',
-                  locals: common_locals.merge({ label: "Started at", value: @background_task.started_at }) %>
+                  locals: { label: "Started at", value: @background_task.started_at } %>
             <%= render partial: 'show_detail_row',
-                  locals: common_locals.merge({ label: "Finished at", value: @background_task.finished_at }) %>
+                  locals: { label: "Finished at", value: @background_task.finished_at } %>
             <%= render partial: 'show_detail_row',
-                  locals: common_locals.merge({
+                  locals: {
                     label: "Duration",
                     value: @background_task.finished_at && @background_task.started_at ?
                       distance_of_time_in_words(
@@ -37,7 +36,7 @@
                           Time.now,
                           include_seconds: true) + ' so far...'
                         : ''
-                  }) %>
+                  } %>
           </div>
         </div>
         <div class="row">

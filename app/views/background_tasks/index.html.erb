@@ -70,6 +70,7 @@
             <tr>
               <th><%= sortable 'id', @filter, background_tasks_path, 'Id' %></th>
               <th>Type</th>
+              <th><%= sortable 'started_at', @filter, background_tasks_path, 'Started' %></th>
               <th>Status</th>
               <th>Outcome</th>
               <th></th>
@@ -80,6 +81,7 @@
             <tr>
               <td><%= background_task.id %></td>
               <td><%= background_task.task_type.humanize %></td>
+              <td><%= background_task.started_at %></td>
               <td><%= background_task.status.humanize %></td>
               <td><%= background_task.outcome.humanize %></td>
               <td class="text-right">
@@ -101,7 +103,8 @@
             <% end %>
           </div>
           <strong><%= background_task.id %>. <%= background_task.task_type.humanize %></strong><br/>
-          <%= background_task.status.humanize %><br/>
+          <%= background_task.started_at %><br/>
+          <%= background_task.status.humanize %>
         </li>
         <% end %>
       </ul>
