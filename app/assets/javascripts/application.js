@@ -32,7 +32,7 @@ $(function () {
   // File inputs the Inspinia way?
   //
   $('.custom-file-input').on('change', function () {
-    let fileName = $(this).val().split('\\').pop();
+    var fileName = $(this).val().split('\\').pop();
     $(this).next('.custom-file-label').addClass("selected").html(fileName);
   });
 
