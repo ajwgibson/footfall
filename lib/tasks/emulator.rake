@@ -35,7 +35,7 @@ namespace :emulator do
   private
 
   def generate_battery_level(device)
-    device.battery - 1 unless device.battery.nil? || device.battery.zero?
+    device.battery - rand(3) unless device.battery.nil? || device.battery.zero?
   end
 
   def generate_footfall_count(device)
@@ -67,21 +67,21 @@ namespace :emulator do
     (0..10),  # 5
     (0..15),  # 6
     (0..20),  # 7
-    (0..30),  # 8
-    (0..40),  # 9
-    (0..50),  # 10
-    (0..60),  # 11
-    (0..70),  # 12
-    (0..80),  # 13
-    (0..90),  # 14
-    (0..100), # 15
-    (0..110), # 16
-    (0..120), # 17
-    (0..110), # 18
-    (0..90),  # 19
-    (0..70),  # 20
-    (0..40),  # 21
-    (0..30),  # 22
-    (0..10)   # 23
+    (0..25),  # 8
+    (0..30),  # 9
+    (0..40),  # 10
+    (0..50),  # 11
+    (0..60),  # 12
+    (0..70),  # 13
+    (0..70),  # 14
+    (0..80),  # 15
+    (0..80),  # 16
+    (0..90),  # 17
+    (0..70),  # 18
+    (0..60),  # 19
+    (0..50),  # 20
+    (0..20),  # 21
+    (0..10),  # 22
+    (0..6)    # 23
   ]
 end
