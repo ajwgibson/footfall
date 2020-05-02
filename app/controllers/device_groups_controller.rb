@@ -18,6 +18,12 @@ class DeviceGroupsController < ApplicationController
 
   def show
     @title = 'Device group details'
+    @alarms =
+      Alarm
+        .joins(:device)
+        .active
+        .where(alarms: { device_id: @device_group.devices.collect { |d| d.id } })
+        .order('devices.device_id')
   end
 
   def new
