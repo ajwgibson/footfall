@@ -1,7 +1,23 @@
-<div class="wrapper wrapper-content animated fadeInRight">
+<div class="wrapper wrapper-content animated fadeInRight" id="vue-app">
   <div class="ibox">
     <div class="ibox-title">
       <div class="ibox-tools">
+        <div class="btn-group">
+          <button
+              class="btn btn-info btn-xs btn-w-m dropdown-toggle"
+              v-bind:class="{ disabled: !alarmsAreSelected }"
+              id="dropdownMenuLink" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+            Update selected alarms
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <li class="py-0 px-1">
+              <a class="dropdown-item p-0" v-on:click="submitBulk('#form-clear-many')">Clear selected alarms</a>
+            </li>
+          </ul>
+        </div>
+
         <span class="btn btn-<%= @filter.except(:order_by).empty? ? "secondary" : "warning" %> btn-xs btn-w-m"
           data-toggle="collapse" data-target="#filter">
           <i class="fa fa-filter"></i> Filter
@@ -67,6 +83,7 @@
         <table class="table table-striped vertical-align-middle">
           <thead>
             <tr>
+              <th> <input type="checkbox" @change="toggleAllSelected" /> </th>
               <th><%= sortable 'devices.device_id', @filter, alarms_path, 'Device ID' %></th>
               <th><%= sortable 'alarm_type', @filter, alarms_path, 'Alarm type' %></th>
               <th><%= sortable 'level', @filter, alarms_path, 'Level' %></th>
@@ -78,6 +95,10 @@
           <tbody>
             <% @alarms.each do |alarm| %>
             <tr>
+              <td>
+                <%= check_box_tag "alarm_ids[]", alarm.id, false, class: 'check_alarm',
+                        "v-on:change": "toggleOneSelected" %>
+              </td>
               <td><%= alarm.device.device_id %></td>
               <td><%= alarm_type_label(alarm) %></td>
               <td><%= alarm_level_label(alarm) %></td>
@@ -126,3 +147,37 @@
     </div>
   </div>
 </div>
+
+<%= form_tag(clear_many_alarms_path,
+      { data: { warn: 'yes' }, method: :put, id: 'form-clear-many' }) %>
+
+
+<%= javascript_tag do %>
+
+  var app = new Vue({
+    el: '#vue-app',
+    data: {
+      alarmsAreSelected: false
+    },
+    methods: {
+      toggleAllSelected: function(event) {
+        $('.check_alarm').prop('checked', event.target.checked);
+        this.updateAlarmsAreSelected();
+      },
+      toggleOneSelected: function(event) {
+        this.updateAlarmsAreSelected();
+      },
+      updateAlarmsAreSelected: function() {
+        this.alarmsAreSelected = $('.check_alarm:checked').length > 0;
+      },
+      submitBulk: function(formSelector) {
+        $('.check_alarm:checked').each((index, cb) => {
+          let text = '<input type="hidden" name="alarm_ids[]" value="' + cb.value + '" /> ';
+          $(formSelector).append(text);
+        });
+        $(formSelector).submit();
+      }
+    }
+  });
+
+<% end %>

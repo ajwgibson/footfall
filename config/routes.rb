@@ -36,6 +36,9 @@ Rails.application.routes.draw do
     member do
       put 'clear'
     end
+    collection do
+      put :clear_many
+    end
   end
 
   get 'background_tasks/clear_filter'

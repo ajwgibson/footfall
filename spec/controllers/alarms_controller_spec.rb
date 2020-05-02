@@ -137,4 +137,8 @@ RSpec.describe AlarmsController, type: :controller do
       end
     end
   end
+
+  describe 'PUT #clear_many' do
+    it 'is not tested yet Alan!!!'
+  end
 end

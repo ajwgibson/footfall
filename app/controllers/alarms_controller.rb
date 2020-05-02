@@ -25,6 +25,13 @@ class AlarmsController < ApplicationController
     redirect_to alarm_path(@alarm), notice: 'Alarm was cleared'
   end
 
+  def clear_many
+    before = Alarm.cleared.count
+    Alarm.active.where(id: params[:alarm_ids]).each { |a| a.cleared! }
+    count = Alarm.cleared.count - before
+    redirect_to alarms_path, notice: "#{count} #{'alarm'.pluralize(count)} cleared"
+  end
+
   private
 
   def get_filter
