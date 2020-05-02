@@ -270,18 +270,7 @@
     );
 
     <% @devices_to_mark.each do |device| %>
-    markers.push(
-      new google.maps.Marker({
-        position: {
-          lat: <%= device.latitude %>,
-          lng: <%= device.longitude %>
-        },
-        icon: {
-          url: "<%= device_map_icon_url(device) %>"
-        },
-        map: map
-      })
-    )
+      <%= render partial: 'map_marker.js', locals: { device: device } %>
     <% end %>
   }
 

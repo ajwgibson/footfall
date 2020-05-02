@@ -129,6 +129,7 @@
 <%= javascript_tag do %>
 
   var map;
+  var markers = [];
 
   function initMap() {
     let center = { lat: <%= map_centre[:latitude] %>, lng: <%= map_centre[:longitude] %> };
@@ -142,13 +143,7 @@
     );
 
     <% @device_group.devices.with_a_location(true).each do |d| %>
-    new google.maps.Marker({
-      position: {
-        lat: <%= d.latitude %>,
-        lng: <%= d.longitude %>
-      },
-      map: map
-    });
+      <%= render partial: 'map_marker.js', locals: { device: d } %>
     <% end %>
   }
 

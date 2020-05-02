@@ -211,6 +211,7 @@
 
 
   var map;
+  var markers = [];
 
   function initMap() {
     let center = { lat: <%= @settings.default_latitude %>, lng: <%= @settings.default_longitude %> };
@@ -229,7 +230,7 @@
     );
 
     <% if @device.latitude.present? && @device.longitude.present? %>
-    let marker = new google.maps.Marker({ position: center, map: map });
+      <%= render partial: 'map_marker.js', locals: { device: @device } %>
     <% end %>
   }
 
