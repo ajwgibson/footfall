@@ -183,6 +183,17 @@ class Device < ApplicationRecord
     return false
   end
 
+  def graph_id
+    "#{self.device_id}-footfall-graph"
+  end
+
+  def graph_data
+    DeviceDataRecord
+        .with_device_id(self.device_id)
+        .order(recorded_at: :desc)
+        .limit(96).reverse
+  end
+
   private
 
   def reorder_thresholds

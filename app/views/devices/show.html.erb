@@ -110,7 +110,7 @@
           <h3>Recent footfall data</h3>
         </div>
         <div class="ibox-content">
-          <canvas id="FootfallData" width="100%" height="40"></canvas>
+          <canvas id="<%= @device.graph_id %>" width="100%" height="40"></canvas>
         </div>
       </div>
     </div>
@@ -192,23 +192,7 @@
 
 <%= javascript_tag do %>
 
-  var colours = {
-    blue:   { normal: "rgba(93,  165, 218, 1)", highlight: "rgba(93,  165, 218, 0.9)", lowlight: "rgba(93,  165, 218, 0.5)" },
-    green:  { normal: "rgba(96,  189, 104, 1)", highlight: "rgba(96,  189, 104, 0.9)", lowlight: "rgba(96,  189, 104, 0.5)" },
-    pink:   { normal: "rgba(241, 124, 176, 1)", highlight: "rgba(241, 124, 176, 0.9)", lowlight: "rgba(241, 124, 176, 0.5)" },
-    brown:  { normal: "rgba(178, 145, 47,  1)", highlight: "rgba(178, 145, 47,  0.9)", lowlight: "rgba(178, 145, 47,  0.5)" },
-    purple: { normal: "rgba(178, 118, 178, 1)", highlight: "rgba(178, 118, 178, 0.9)", lowlight: "rgba(178, 118, 178, 0.5)" },
-    silver: { normal: "rgba(192, 192, 192, 1)", highlight: "rgba(192, 192, 192, 0.9)", lowlight: "rgba(192, 192, 192, 0.5)" },
-    yellow: { normal: "rgba(222, 207, 63,  1)", highlight: "rgba(222, 207, 63,  0.9)", lowlight: "rgba(222, 207, 63,  0.5)" },
-    red:    { normal: "rgba(241, 88,  84,  1)", highlight: "rgba(241, 88,  84,  0.9)", lowlight: "rgba(241, 88,  84,  0.5)" },
-    orange: { normal: "rgba(250, 164, 58,  1)", highlight: "rgba(250, 164, 58,  0.9)", lowlight: "rgba(250, 164, 58,  0.5)" },
-    gray:   { normal: "rgba(77,  77,  77,  1)", highlight: "rgba(77,  77,  77,  0.9)", lowlight: "rgba(77,  77,  77,  0.5)" },
-  };
-
-  var normal_colours    = Object.values(colours).map(function(item) { return item['normal']; });
-  var highlight_colours = Object.values(colours).map(function(item) { return item['highlight']; });
-  var lowlight_colours  = Object.values(colours).map(function(item) { return item['lowlight']; });
-
+  <%= render partial: 'chart_colours.js' %>
 
   var map;
   var markers = [];
@@ -235,66 +219,7 @@
   }
 
   $(function() {
-    new Chart("FootfallData", {
-      type: 'line',
-      data: {
-        labels: <%= raw @data.map { |d| d.recorded_at.to_s } %>,
-        datasets: [
-          {
-            data: <%= raw @data.map { |d| d.footfall } %>,
-            borderColor: normal_colours[1],
-            backgroundColor: lowlight_colours[1],
-            borderWidth: 2,
-            pointRadius: 1,
-            lineTension: 0
-          }
-        ]
-      },
-      options: {
-        scales: {
-          xAxes: [{
-            type: 'time',
-            offset: true,
-            time: {
-              unit: 'hour',
-              displayFormats: {
-                hour: 'MMM D, hA'
-              }
-            },
-            maxBarThickness: 30,
-          }],
-          yAxes: [{
-            ticks: {
-              beginAtZero:true
-            }
-          }],
-          maintainAspectRatio: false
-        },
-        legend: { display: false },
-        annotation: {
-          annotations: [
-            {
-              type: 'line',
-              drawTime: 'beforeDatasetsDraw',
-              mode: 'horizontal',
-              scaleID: 'y-axis-0',
-              value: <%= @device.footfall_threshold_red %>,
-              borderColor: colours['red']['normal'],
-              borderWidth: 2,
-            },
-            {
-              type: 'line',
-              drawTime: 'beforeDatasetsDraw',
-              mode: 'horizontal',
-              scaleID: 'y-axis-0',
-              value: <%= @device.footfall_threshold_amber %>,
-              borderColor: colours['orange']['normal'],
-              borderWidth: 2,
-            }
-          ]
-        }
-      }
-    });
+    <%= render partial: 'footfall_graph.js', locals: { device: @device } %>
   });
 
 <% end %>

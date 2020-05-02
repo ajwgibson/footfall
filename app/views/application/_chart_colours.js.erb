@@ -1,0 +1,16 @@
+var colours = {
+  blue:   { normal: "rgba(93,  165, 218, 1)", highlight: "rgba(93,  165, 218, 0.9)", lowlight: "rgba(93,  165, 218, 0.5)" },
+  green:  { normal: "rgba(96,  189, 104, 1)", highlight: "rgba(96,  189, 104, 0.9)", lowlight: "rgba(96,  189, 104, 0.5)" },
+  pink:   { normal: "rgba(241, 124, 176, 1)", highlight: "rgba(241, 124, 176, 0.9)", lowlight: "rgba(241, 124, 176, 0.5)" },
+  brown:  { normal: "rgba(178, 145, 47,  1)", highlight: "rgba(178, 145, 47,  0.9)", lowlight: "rgba(178, 145, 47,  0.5)" },
+  purple: { normal: "rgba(178, 118, 178, 1)", highlight: "rgba(178, 118, 178, 0.9)", lowlight: "rgba(178, 118, 178, 0.5)" },
+  silver: { normal: "rgba(192, 192, 192, 1)", highlight: "rgba(192, 192, 192, 0.9)", lowlight: "rgba(192, 192, 192, 0.5)" },
+  yellow: { normal: "rgba(222, 207, 63,  1)", highlight: "rgba(222, 207, 63,  0.9)", lowlight: "rgba(222, 207, 63,  0.5)" },
+  red:    { normal: "rgba(241, 88,  84,  1)", highlight: "rgba(241, 88,  84,  0.9)", lowlight: "rgba(241, 88,  84,  0.5)" },
+  orange: { normal: "rgba(250, 164, 58,  1)", highlight: "rgba(250, 164, 58,  0.9)", lowlight: "rgba(250, 164, 58,  0.5)" },
+  gray:   { normal: "rgba(77,  77,  77,  1)", highlight: "rgba(77,  77,  77,  0.9)", lowlight: "rgba(77,  77,  77,  0.5)" },
+};
+
+var normal_colours    = Object.values(colours).map(function(item) { return item['normal']; });
+var highlight_colours = Object.values(colours).map(function(item) { return item['highlight']; });
+var lowlight_colours  = Object.values(colours).map(function(item) { return item['lowlight']; });
