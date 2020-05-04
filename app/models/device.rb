@@ -190,8 +190,9 @@ class Device < ApplicationRecord
   def graph_data
     DeviceDataRecord
         .with_device_id(self.device_id)
+        .where('recorded_at > ?', 24.hours.ago)
         .order(recorded_at: :desc)
-        .limit(96).reverse
+        .reverse
   end
 
   private

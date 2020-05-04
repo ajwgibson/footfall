@@ -29,7 +29,9 @@ new Chart("<%= device.graph_id %>", {
           unit: 'hour',
           displayFormats: {
             hour: 'MMM D, hA'
-          }
+          },
+          min: '<%= 24.hours.ago %>',
+          max: '<%= Time.now %>'
         },
         maxBarThickness: 30,
       }],
