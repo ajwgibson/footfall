@@ -29,7 +29,8 @@ class DeviceDataRecordsController < ApplicationController
       .permit(
         :order_by,
         :with_device_id,
-        :recorded_on
+        :recorded_on,
+        :with_status
       ).to_h
 
     if filter.empty? && session.key?(:filter_device_data_records)

@@ -36,6 +36,14 @@
                       </div>
                     </div>
                   </div>
+                  <div class="col-sm">
+                    <div class="form-group">
+                      <%= label_tag :with_status, 'Find records with status...', :class => 'control-label' %>
+                      <%= select_tag :with_status,
+                            options_for_select(DeviceDataRecord.selectable_statuses, @filter[:with_status]),
+                            { prompt: "Please select a status...", class: 'form-control' } %>
+                    </div>
+                  </div>
                 </div>
                 <div class="row">
                   <div class="col">
@@ -63,6 +71,7 @@
               <th><%= sortable 'device_id', @filter, device_data_records_path, 'Device ID' %></th>
               <th>Footfall</th>
               <th>Battery</th>
+              <th>Status</th>
               <th></th>
             </tr>
           </thead>
@@ -73,6 +82,7 @@
               <td><%= record.device_id %></td>
               <td><%= record.footfall %></td>
               <td><%= record.battery %></td>
+              <td><%= device_data_record_status(record) %></td>
               <td class="text-right">
               </td>
             </tr>
