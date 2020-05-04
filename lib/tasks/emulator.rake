@@ -35,7 +35,8 @@ namespace :emulator do
   private
 
   def generate_battery_level(device)
-    device.battery - rand(3) unless device.battery.nil? || device.battery.zero?
+    level = device.battery - rand(3) unless device.battery.nil? || device.battery.zero?
+    level > 0 ? level : 0
   end
 
   def generate_footfall_count(device)
