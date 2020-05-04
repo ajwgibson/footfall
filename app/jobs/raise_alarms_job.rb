@@ -9,8 +9,8 @@ class RaiseAlarmsJob < ApplicationJob
     Device.all.each do |device|
       data = DeviceDataRecord
         .with_device_id(device.device_id)
+        .collected
         .order(recorded_at: :desc)
-        .limit(96)
         .to_ary
 
       next unless data.count > 0
@@ -20,6 +20,8 @@ class RaiseAlarmsJob < ApplicationJob
 
       min_battery  = data.min_by { |d| d.battery }.battery
       battery_alarm = device.raise_battery_alarm(min_battery)
+
+      data.each { |d| d.processed! }
 
       records << {
         device_id: device.device_id,
