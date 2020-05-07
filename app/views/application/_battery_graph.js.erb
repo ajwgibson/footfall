@@ -1,0 +1,69 @@
+
+<%
+  graph_data = device.graph_data
+  display_x_axis_labels = true if local_assigns[:display_x_axis_labels].nil?
+%>
+
+new Chart("<%= device.graph_id %>-battery", {
+  type: 'line',
+  data: {
+    labels: <%= raw graph_data.map { |d| d.recorded_at.to_s } %>,
+    datasets: [
+      {
+        data: <%= raw graph_data.map { |d| d.battery } %>,
+        borderColor: normal_colours[1],
+        backgroundColor: lowlight_colours[1],
+        borderWidth: 2,
+        pointRadius: 1,
+        lineTension: 0
+      }
+    ]
+  },
+  options: {
+    scales: {
+      xAxes: [{
+        type: 'time',
+        offset: true,
+        display: <%= display_x_axis_labels %>,
+        time: {
+          unit: 'hour',
+          displayFormats: {
+            hour: 'MMM D, hA'
+          },
+          min: '<%= 24.hours.ago %>',
+          max: '<%= Time.now %>'
+        },
+        maxBarThickness: 30,
+      }],
+      yAxes: [{
+        ticks: {
+          beginAtZero:true
+        }
+      }],
+      maintainAspectRatio: false
+    },
+    legend: { display: false },
+    annotation: {
+      annotations: [
+        {
+          type: 'line',
+          drawTime: 'beforeDatasetsDraw',
+          mode: 'horizontal',
+          scaleID: 'y-axis-0',
+          value: <%= device.battery_threshold_red %>,
+          borderColor: colours['red']['normal'],
+          borderWidth: 2,
+        },
+        {
+          type: 'line',
+          drawTime: 'beforeDatasetsDraw',
+          mode: 'horizontal',
+          scaleID: 'y-axis-0',
+          value: <%= device.battery_threshold_amber %>,
+          borderColor: colours['orange']['normal'],
+          borderWidth: 2,
+        }
+      ]
+    }
+  }
+});
