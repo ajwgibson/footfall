@@ -38,7 +38,7 @@ class DeviceDataRecordsController < ApplicationController
     end
 
     filter_dates.each { |d| fix_filter_dates(filter, d, :to_date) }
-    filter[:order_by] = 'recorded_at' unless filter.key?(:order_by)
+    filter[:order_by] = 'recorded_at desc' unless filter.key?(:order_by)
     filter.delete_if { |_key, value| value.blank? }
   end
 

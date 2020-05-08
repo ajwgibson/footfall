@@ -41,7 +41,7 @@ RSpec.describe DeviceDataRecordsController, type: :controller do
     end
     it "applies a default 'order_by' if none is specified" do
       get :index, params: {}
-      expect(session[:filter_device_data_records]).to include(order_by: 'recorded_at')
+      expect(session[:filter_device_data_records]).to include(order_by: 'recorded_at desc')
     end
     it "applies the 'order_by' parameter" do
       b = FactoryBot.create(:default_device_data_record, device_id: 'b')
