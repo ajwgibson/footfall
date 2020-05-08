@@ -9,6 +9,10 @@
         <div class="ibox-content">
           <div class="row">
             <div class="col-md-12">
+
+              <%= render partial: 'show_detail_row', locals: {
+                label: "Device type", value: @device.device_type.humanize } %>
+
               <%= render partial: 'show_detail_row', locals: { label: "Device ID", value: @device.device_id } %>
 
               <%= render partial: 'show_detail_row', locals: {

@@ -70,6 +70,10 @@ RSpec.describe DevicesController, type: :controller do
       expect(Device).to receive(:with_a_location).with('true').and_return(devices)
       get :index, params: { with_a_location: true }
     end
+    it "applies the 'with_device_type' filter" do
+      expect(Device).to receive(:with_device_type).with('arduino').and_return(devices)
+      get :index, params: { with_device_type: 'arduino' }
+    end
     context 'applies paging' do
       before(:each) do
         Kaminari.configure do |config|
@@ -161,7 +165,8 @@ RSpec.describe DevicesController, type: :controller do
           notes: 'Some notes',
           device_group_id: device_group.id,
           footfall: 10,
-          battery: 11
+          battery: 11,
+          device_type: :arduino
         }
         post(:create, params: { device: attrs })
       end
@@ -211,6 +216,9 @@ RSpec.describe DevicesController, type: :controller do
       end
       it 'stores the battery' do
         expect(device.battery).to eq(11)
+      end
+      it 'stores the device type' do
+        expect(device.arduino?).to be_truthy
       end
     end
     context 'with invalid data' do

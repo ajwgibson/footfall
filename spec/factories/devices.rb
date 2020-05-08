@@ -13,5 +13,7 @@ FactoryBot.define do
 
     footfall { rand(0..200) }
     battery  { rand(0..100) }
+
+    device_type { [:emulated, :arduino].sample }
   end
 end

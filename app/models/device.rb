@@ -7,11 +7,14 @@ class Device < ApplicationRecord
   belongs_to :device_group, optional: true
   has_many :alarms, dependent: :destroy
 
+  enum device_type: %i[ emulated arduino ]
+
   # CALLBACKS
   before_save :reorder_thresholds
 
   # VALIDATION
   validates :device_id, presence: true, uniqueness: true
+  validates :device_type, presence: true
 
   validates :footfall_threshold_amber, numericality: {
     only_integer: true, greater_than: 0, less_than: 65536
@@ -33,6 +36,7 @@ class Device < ApplicationRecord
   scope :ordered_by_device_id, -> { order(:device_id) }
   scope :with_device_id, ->(value) { where('lower(device_id) like lower(?)', "%#{value}%")}
   scope :with_device_group_id, ->(value) { where(device_group_id: value) }
+  scope :with_device_type, ->(value) { where(device_type: value) }
 
   def self.with_battery_status(value)
     return Device.where('battery > battery_threshold_amber') if 'green'.eql?(value)
@@ -65,6 +69,10 @@ class Device < ApplicationRecord
   # METHODS
   def self.status_values
     ['red', 'amber', 'green']
+  end
+
+  def self.selectable_device_types
+    Device.device_types.keys.map { |r| [r.humanize, r] }
   end
 
   def self.new_device

@@ -61,6 +61,10 @@ RSpec.describe Device, type: :model do
       expect(FactoryBot.build(:default_device, battery_threshold_red:  99)).to     be_valid
       expect(FactoryBot.build(:default_device, battery_threshold_red: 100)).not_to be_valid
     end
+
+    it 'has a device type' do
+      expect(FactoryBot.build(:default_device, device_type: nil)).not_to be_valid
+    end
   end
 
   # CALLBACKS
@@ -233,6 +237,18 @@ RSpec.describe Device, type: :model do
         expect(filtered).not_to include(@a)
         expect(filtered).to include(@b, @c, @d)
       end
+    end
+  end
+
+  describe 'scope:with_device_type' do
+    before(:each) do
+      @a = FactoryBot.create(:default_device, device_type: :emulated)
+      @b = FactoryBot.create(:default_device, device_type: :arduino)
+    end
+    it 'includes records where the device type matches the value' do
+      filtered = Device.with_device_type(:emulated)
+      expect(filtered).to     include(@a)
+      expect(filtered).not_to include(@b)
     end
   end
 

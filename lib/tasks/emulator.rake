@@ -4,7 +4,8 @@ namespace :emulator do
   task :generate_footfall_data, [] => :environment do |task, args|
     puts 'Generating footfall data...'
 
-    Device.left_outer_joins(:device_group)
+    Device.emulated
+          .left_outer_joins(:device_group)
           .order('device_groups.name, devices.device_id').each do |device|
 
       battery = generate_battery_level(device)

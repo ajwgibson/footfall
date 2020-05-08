@@ -77,7 +77,8 @@ class DevicesController < ApplicationController
         :notes,
         :device_group_id,
         :footfall,
-        :battery
+        :battery,
+        :device_type
       )
   end
 
@@ -90,7 +91,8 @@ class DevicesController < ApplicationController
         :with_device_group_id,
         :with_battery_status,
         :with_footfall_status,
-        :with_a_location
+        :with_a_location,
+        :with_device_type
       ).to_h
     filter = session[:filter_devices].symbolize_keys! if filter.empty? && session.key?(:filter_devices)
     filter[:order_by] = 'device_id' unless filter.key?(:order_by)

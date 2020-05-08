@@ -40,6 +40,12 @@
                             options_for_select([['Yes', 'true'],['No', 'false']], @filter[:with_a_location]),
                             { prompt: "Please select a value...", class: 'form-control' } %>
                     </div>
+                    <div class="form-group">
+                      <%= label_tag :with_device_type, 'Find devices with device type...', :class => 'control-label' %>
+                      <%= select_tag :with_device_type,
+                        options_for_select(Device.selectable_device_types, @filter[:with_device_type]),
+                        { prompt: "Please select a value...", class: 'form-control' } %>
+                    </div>
                   </div>
                   <div class="col-sm">
                     <div class="form-group">

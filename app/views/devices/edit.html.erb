@@ -15,6 +15,15 @@
 
             <fieldset class="mb-4">
               <legend class="mb-3 border-bottom">Basic details</legend>
+
+              <div class="row">
+                <div class="col-sm-6">
+                  <%= f.select :device_type,
+                      options_for_select(Device.selectable_device_types, @device.device_type),
+                      { prompt: "Please select a device type...", class: 'form-control' } %>
+                </div>
+              </div>
+
               <div class="row">
                 <div class="col-sm-6">
                   <%= f.text_field :device_id, :label => 'Device ID' %>
