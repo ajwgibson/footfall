@@ -64,6 +64,17 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe 'scope:with_role' do
+    before(:each) do
+      @a = FactoryBot.create(:default_user)
+      @b = FactoryBot.create(:administrator)
+    end
+    it 'returns users matching the supplied role' do
+      result = User.with_role('administrator')
+      expect(result).to eq([@b])
+    end
+  end
+
   # METHODS
   describe '#full_name' do
     it "is 'John Smith' when first_name is 'John' and last_name is 'Smith'" do
@@ -95,6 +106,13 @@ RSpec.describe User, type: :model do
           last_name: 'smith'
         ).initials
       ).to eq('JS')
+    end
+  end
+
+  describe 'human_role' do
+    it 'is a humanized version of the role name' do
+      expect(FactoryBot.build(:default_user).human_role).to eq('Standard user')
+      expect(FactoryBot.build(:administrator).human_role).to eq('Administrator')
     end
   end
 end

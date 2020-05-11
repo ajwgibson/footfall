@@ -31,6 +31,10 @@
             <%= f.text_field :last_name,  :label => 'Last name' %>
             <%= f.email_field :email,     :label => 'Email' %>
 
+            <%= f.select :role,
+                options_for_select(User.selectable_roles, @user.role),
+                { prompt: "Please select a role...", class: 'form-control' } %>
+
             <% if !@user.id? %>
               <%= f.password_field :password, :label => 'Password' %>
               <%= f.password_field :password_confirmation, :label => 'Confirm password' %>

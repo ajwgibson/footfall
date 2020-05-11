@@ -4,8 +4,11 @@ class User < ApplicationRecord
 
   include Filterable
 
+  enum role: %i[ standard_user administrator ]
+
   validates :first_name, presence: true
   validates :last_name,  presence: true
+  validates :role,  presence: true
   validate :password_rules
 
   # Include default devise modules. Others available are:
@@ -37,13 +40,23 @@ class User < ApplicationRecord
     where('lower(email) like lower(?)', "%#{email}%")
   }
 
+  scope :with_role, ->(value) { where(role: value) }
+
   # METHODS
+  def self.selectable_roles
+    User.roles.keys.map { |r| [r.humanize, r] }
+  end
+
   def full_name
     "#{first_name} #{last_name}"
   end
 
   def initials
     "#{first_name[0]}#{last_name[0]}".upcase
+  end
+
+  def human_role
+    self.role.humanize
   end
 
   def avatar

@@ -68,7 +68,8 @@ class UsersController < ApplicationController
         :first_name,
         :last_name,
         :password,
-        :password_confirmation
+        :password_confirmation,
+        :role
       )
   end
 
@@ -78,7 +79,8 @@ class UsersController < ApplicationController
       .permit(
         :order_by,
         :with_name,
-        :with_email
+        :with_email,
+        :with_role
       ).to_h
     filter = session[:filter_users].symbolize_keys! if filter.empty? && session.key?(:filter_users)
     filter[:order_by] = 'first_name, last_name' unless filter.key?(:order_by)

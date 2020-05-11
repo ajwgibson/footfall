@@ -7,7 +7,7 @@
           <%= show_avatar_small(current_user) %>
           <a data-toggle="dropdown" class="dropdown-toggle" href="#">
             <span class="block m-t-xs font-bold"><%= current_user.full_name %></span>
-            <span class="text-muted text-xs block">System User <b class="caret"></b></span>
+            <span class="text-muted text-xs block"><%= current_user.human_role %> <b class="caret"></b></span>
           </a>
           <ul class="dropdown-menu animated fadeInRight m-t-xs">
             <li><%= link_to 'Profile', profile_index_path, class: 'dropdown-item' %></li>
@@ -25,30 +25,39 @@
         <% end %>
       </li>
 
+      <% if can? :manage, Device %>
       <li class="<%= 'active' if 'devices' == controller.controller_name %>">
         <%= link_to devices_path do %>
           <i class="fas fa-fw fa-upload"></i> <span class="nav-label">Devices</span>
         <% end %>
       </li>
+      <% end %>
 
+      <% if can? :manage, DeviceGroup %>
       <li class="<%= 'active' if 'device_groups' == controller.controller_name %>">
         <%= link_to device_groups_path do %>
           <i class="fas fa-fw fa-object-group"></i> <span class="nav-label">Device groups</span>
         <% end %>
       </li>
+      <% end %>
 
+      <% if can? :manage, DeviceDataRecord %>
       <li class="<%= 'active' if 'device_data_records' == controller.controller_name %>">
         <%= link_to device_data_records_path do %>
           <i class="fas fa-fw fa-stream"></i> <span class="nav-label">Device records</span>
         <% end %>
       </li>
+      <% end %>
 
+      <% if can? :manage, Alarm %>
       <li class="<%= 'active' if 'alarms' == controller.controller_name %>">
         <%= link_to alarms_path do %>
           <i class="fas fa-fw fa-bell"></i> <span class="nav-label">Alarms</span>
         <% end %>
       </li>
+      <% end %>
 
+      <% if can? :manage, any: [User, Audit, BackgroundTask, Settings] %>
       <li class="<%= 'active' if (
           ['users', 'audits', 'background_tasks', 'settings']
           .include?(controller.controller_name)
@@ -73,6 +82,7 @@
           </li>
         </ul>
       </li>
+      <% end %>
 
     </ul>
   </div>

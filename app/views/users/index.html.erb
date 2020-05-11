@@ -33,6 +33,14 @@
                       <%= text_field_tag :with_name, @filter[:with_name], :class => 'form-control' %>
                     </div>
                   </div>
+                  <div class="col-sm">
+                    <div class="form-group">
+                      <%= label_tag :with_role, 'Find users with role...', :class => 'control-label' %>
+                      <%= select_tag :with_role,
+                        options_for_select(User.selectable_roles, @filter[:with_role]),
+                        { prompt: "Please select a value...", class: 'form-control' } %>
+                    </div>
+                  </div>
                 </div>
                 <div class="row">
                   <div class="col">
@@ -59,6 +67,7 @@
               <th></th>
               <th><%= sortable 'first_name, last_name', @filter, users_path, 'Name' %></th>
               <th><%= sortable 'email', @filter, users_path, 'Email' %></th>
+              <th>Role</th>
               <th><%= sortable 'current_sign_in_at', @filter, users_path, 'Last signed in' %></th>
               <th></th>
             </tr>
@@ -69,6 +78,7 @@
               <td><%= show_avatar_xs(user) %></td>
               <td><%= user.full_name %></td>
               <td><%= user.email %></td>
+              <td><%= user.human_role %></td>
               <td><%= user.current_sign_in_at %></td>
               <td class="text-right">
                 <%= link_to user_path(user), class: "btn btn-primary btn-xs" do %>

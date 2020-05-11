@@ -58,6 +58,10 @@ RSpec.describe UsersController, type: :controller do
       expect(User).to receive(:with_email).with('email').and_return(users)
       get :index, params: { with_email: 'email' }
     end
+    it "applies the 'with_role' filter" do
+      expect(User).to receive(:with_role).with('administrator').and_return(users)
+      get :index, params: { with_role: 'administrator' }
+    end
     context 'applies paging' do
       before(:each) do
         Kaminari.configure do |config|
@@ -137,7 +141,8 @@ RSpec.describe UsersController, type: :controller do
           first_name: 'John',
           last_name: 'Smith',
           password: 'HasToBeValid0',
-          password_confirmation: 'HasToBeValid0'
+          password_confirmation: 'HasToBeValid0',
+          role: 'administrator'
         }
         post(:create, params: { user: attrs })
       end
@@ -163,6 +168,9 @@ RSpec.describe UsersController, type: :controller do
       end
       it 'stores the last_name' do
         expect(user.last_name).to eq('Smith')
+      end
+      it 'stores the role' do
+        expect(user.administrator?).to be_truthy
       end
     end
     context 'with invalid data' do
