@@ -16,6 +16,7 @@
           <%= render partial: 'show_detail_row', locals: { label: "First name", value: current_user.first_name } %>
           <%= render partial: 'show_detail_row', locals: { label: "Last name", value: current_user.last_name } %>
           <%= render partial: 'show_detail_row', locals: { label: "Email", value: current_user.email } %>
+          <%= render partial: 'show_detail_row', locals: { label: "Role", value: current_user.human_role } %>
           <%= render partial: 'show_detail_row', locals: { label: "Last sign-in", value: current_user.current_sign_in_at } %>
           <%= render partial: 'show_detail_row', locals: { label: "Sign-in count", value: current_user.sign_in_count } %>
 
