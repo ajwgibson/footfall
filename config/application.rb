@@ -30,6 +30,9 @@ module Footfall
     # Don't generate system test files.
     config.generators.system_tests = nil
 
+    # Custom error handling
+    config.exceptions_app = self.routes
+
     # Custom config
     config.x.google.maps_api_key  = 'xxx'
     config.x.aws.footfall_table_name = 'footfall-data'

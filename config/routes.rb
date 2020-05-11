@@ -1,6 +1,12 @@
 Rails.application.routes.draw do
   root to: "home#dashboard"
 
+  get 'errors/not_authorized'
+  get '401', to: 'errors#not_authorized'
+  get '403', to: 'errors#not_authorized'
+  get '404', to: 'errors#not_found'
+  get '500', to: 'errors#internal_error'
+
   devise_for :users
   as :user do
     get 'user/edit' => 'devise/registrations#edit',   :as => 'edit_user_registration'

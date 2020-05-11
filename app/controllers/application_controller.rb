@@ -24,6 +24,10 @@ class ApplicationController < ActionController::Base
     fix_filter_dates_to_string(filter, key) if direction == :to_string
   end
 
+  rescue_from CanCan::AccessDenied do |_exception|
+    redirect_to(controller: 'errors', action: 'not_authorized')
+  end
+
   private
 
   def get_current_settings
