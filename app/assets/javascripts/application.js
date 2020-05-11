@@ -98,7 +98,7 @@ $(function () {
         },
         dataType: 'json',
         success: function (data) {
-          let json = $.map(data, function (device) {
+          var json = $.map(data, function (device) {
             return {
               id: device.id,
               text: device.device_id
