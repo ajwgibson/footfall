@@ -24,6 +24,7 @@
 //= require toastr/toastr.min.js
 //= require toastr_config
 //= require sweetalert/sweetalert.min.js
+//= require typeahead/bootstrap3-typeahead.min.js
 //= require inspinia.js
 
 $(function () {
@@ -67,7 +68,6 @@ $(function () {
   //
   // Date picker inputs
   //
-
   $('.datepicker').datepicker({
     format: "dd/mm/yyyy",
     startView: "days",
@@ -78,5 +78,38 @@ $(function () {
     forceParse: false,
     autoclose: true,
     weekStart: 1,
+  });
+
+  //
+  // Find a device using a 'typeahead' text input
+  //
+  $('.typeahead-find-device').typeahead({
+    minLength: 2,
+    autoSelect: false,
+    fitToElement: false,
+    displayText: function (item) {
+      return item.text;
+    },
+    source: function (query, process) {
+      return $.ajax({
+        url: '/api/devices',
+        data: {
+          name: query
+        },
+        dataType: 'json',
+        success: function (data) {
+          let json = $.map(data, function (device) {
+            return {
+              id: device.id,
+              text: device.device_id
+            }
+          });
+          return process(json);
+        }
+      });
+    },
+    afterSelect: function (item) {
+      window.location.href = '/devices/' + item.id;
+    }
   });
 });

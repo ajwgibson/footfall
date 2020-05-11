@@ -14,6 +14,8 @@ gem 'jbuilder', '~> 2.5'
 gem 'mini_racer', platforms: :ruby
 gem 'bootsnap', '>= 1.1.0', require: false
 
+gem 'active_model_serializers', '~> 0.10.0'
+
 gem 'bootstrap', '~> 4.4.1'
 gem 'bootstrap_form'
 gem 'cancancan'

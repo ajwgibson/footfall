@@ -45,6 +45,7 @@ Rails.application.routes.draw do
   resources :background_tasks, only: [:index, :show, :new, :create, :destroy]
 
   namespace :api, path: 'api' do
+    resources :devices, only: :index
     resources :tasks, only: :create
   end
 end
